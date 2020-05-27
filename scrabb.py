@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 #
-# Description: Scrabble Game
+# Scrabble Game
 # Author: Chris Lyon
+# Contact: chris@cplyon.ca
 
 
 import math
