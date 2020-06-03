@@ -25,6 +25,9 @@ class Letter:
         self.value = value
         self.score = score
 
+    def __str__(self):
+        print("{0},{1}".format(self.value, self.score))
+
 
 class Board:
     SIZE = 15
