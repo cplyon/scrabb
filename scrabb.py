@@ -84,8 +84,10 @@ class Board:
                     row = positions[0][0]
                     col = positions[0][1]
                 elif p[0] == row:
+                    print("Horizontal")
                     orientation = Orientation.HORIZONTAL
                 elif p[1] == col:
+                    print("Vertical")
                     orientation = Orientation.VERTICAL
                 else:
                     return False
@@ -129,18 +131,18 @@ class Board:
 
         # check that all played letters are connected
         if orientation == Orientation.HORIZONTAL:
+            print("H check", positions)
             for i in range(min(positions, key=lambda x: x[1])[1],
-                           max(positions, key=lambda x: x[1])[1]):
-                if (positions[0][0], i) not in positions and \
-                        self._board[positions[0][0]][i] is not None:
-                    print("H check false", p)
+                           max(positions, key=lambda x: x[1])[1]+1):
+                if (positions[0][0], i) not in positions:
+                    print("H check false")
                     return False
         elif orientation == Orientation.VERTICAL:
+            print("V check", positions)
             for i in range(min(positions, key=lambda x: x[0])[0],
-                           max(positions, key=lambda x: x[0])[0]):
-                if (i, positions[0][0]) not in positions and \
-                        self._board[i][positions[0][0]] is not None:
-                    print("V check false", p)
+                           max(positions, key=lambda x: x[0])[0]+1):
+                if (i, positions[0][0]) not in positions:
+                    print("V check false")
                     return False
 
         return True
