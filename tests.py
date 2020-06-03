@@ -35,7 +35,7 @@ class GameTest(unittest.TestCase):
 
     def test_validate_cell_full(self):
         board = Board()
-        board._board[Board.MIDDLE[0]][Board.MIDDLE[0]] = Letter('A', 1)
+        board._board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         is_valid = board.is_valid_play([Board.MIDDLE])
         self.assertFalse(is_valid)
 
@@ -69,6 +69,13 @@ class GameTest(unittest.TestCase):
             [Board.MIDDLE,
             (Board.MIDDLE[0]+1, Board.MIDDLE[1]),
             (Board.MIDDLE[0]+3, Board.MIDDLE[1])])
+        self.assertFalse(is_valid)
+
+    def test_validate_not_touching(self):
+        board = Board()
+        board._board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
+        board.is_empty = False
+        is_valid = board.is_valid_play([(Board.MIDDLE[0], Board.MIDDLE[1]+4)])
         self.assertFalse(is_valid)
 
 if __name__ == "__main__":
