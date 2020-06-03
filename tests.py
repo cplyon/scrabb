@@ -78,6 +78,34 @@ class GameTest(unittest.TestCase):
         is_valid = board.is_valid_play([(Board.MIDDLE[0], Board.MIDDLE[1]+4)])
         self.assertFalse(is_valid)
 
+    def test_validate_touching_left(self):
+        board = Board()
+        board._board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
+        board.is_empty = False
+        is_valid = board.is_valid_play([(Board.MIDDLE[0], Board.MIDDLE[1]-1)])
+        self.assertTrue(is_valid)
+
+    def test_validate_touching_right(self):
+        board = Board()
+        board._board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
+        board.is_empty = False
+        is_valid = board.is_valid_play([(Board.MIDDLE[0], Board.MIDDLE[1]+1)])
+        self.assertTrue(is_valid)
+    
+    def test_validate_touching_above(self):
+        board = Board()
+        board._board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
+        board.is_empty = False
+        is_valid = board.is_valid_play([(Board.MIDDLE[0]+1, Board.MIDDLE[1])])
+        self.assertTrue(is_valid)
+    
+    def test_validate_touching_below(self):
+        board = Board()
+        board._board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
+        board.is_empty = False
+        is_valid = board.is_valid_play([(Board.MIDDLE[0]-1, Board.MIDDLE[1])])
+        self.assertTrue(is_valid)
+
 if __name__ == "__main__":
     logging.basicConfig(stream=sys.stderr)
     logging.getLogger().setLevel(logging.DEBUG)

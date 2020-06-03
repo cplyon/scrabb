@@ -101,7 +101,6 @@ class Board:
 
             # if not first play, check that play touches existing letters
             if not self.is_empty and not touching:
-                print("checking touch")
                 # check above, if not at top row
                 if ((p[0]-1, p[1]) not in positions) and \
                         (p[0] > 0 and
