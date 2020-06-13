@@ -124,7 +124,7 @@ class Board:
 
             # not valid if none touching
             if not touching:
-                print("not touching", p)
+                print("not touching")
                 return False
 
         # check that all played letters are connected
