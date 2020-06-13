@@ -8,11 +8,11 @@ import logging
 import sys
 import unittest
 
-from scrabb import Board
-from scrabb import Letter
+from scrabb.scrabb import Board
+from scrabb.scrabb import Letter
 
 
-class GameTest(unittest.TestCase):
+class BoardTest(unittest.TestCase):
     def setUp(self):
         pass
 
