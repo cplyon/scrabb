@@ -96,38 +96,36 @@ class Board:
         if any(self._board[p[0]][p[1]] is not None for p in positions):
             return False
 
-        for p in positions:
-            # if not first play, check that play touches existing letters
-            if not self.is_empty and not touching:
+        # if not first play, check that play touches existing letters
+        if not self.is_empty:
+            for p in positions:
                 # check above, if not at top row
-                if ((p[0]-1, p[1]) not in positions) and \
-                        (p[0] > 0 and
-                            self._board[p[0]-1][p[1]] is not None):
+                if p[0] > 0 and self._board[p[0]-1][p[1]] is not None:
                     print("touching above")
                     touching = True
+                    break
                 # check below, if not at bottom row
-                if ((p[0]+1, p[1]) not in positions) and \
-                        (p[0] < Board.SIZE-1 and
-                            self._board[p[0]+1][p[1]] is not None):
+                if p[0] < Board.SIZE-1 and \
+                        self._board[p[0]+1][p[1]] is not None:
                     print("touching below")
                     touching = True
+                    break
                 # check left, if not at left column
-                if ((p[0], p[1]-1) not in positions) and \
-                        (p[1] > 0 and
-                            self._board[p[0]][p[1]-1] is not None):
+                if p[1] > 0 and self._board[p[0]][p[1]-1] is not None:
                     print("touching left")
                     touching = True
+                    break
                 # check right, if not at right column
-                if ((p[0], p[1]+1) not in positions) and \
-                        (p[1] < Board.SIZE-1 and
-                            self._board[p[0]][p[1]+1] is not None):
+                if p[1] < Board.SIZE-1 and \
+                        self._board[p[0]][p[1]+1] is not None:
                     print("touching right")
                     touching = True
+                    break
 
-        # check at least one letter touches existing, unless first play
-        if not self.is_empty and not touching:
-            print("not touching", p)
-            return False
+            # not valid if none touching
+            if not touching:
+                print("not touching", p)
+                return False
 
         # check that all played letters are connected
         if orientation == Orientation.HORIZONTAL:
