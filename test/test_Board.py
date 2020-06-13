@@ -92,7 +92,7 @@ class BoardTest(unittest.TestCase):
         board.is_empty = False
         is_valid = board.is_valid_play([(Board.MIDDLE[0], Board.MIDDLE[1]+1)])
         self.assertTrue(is_valid)
-    
+
     def test_validate_touching_above(self):
         board = Board()
         board._board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)

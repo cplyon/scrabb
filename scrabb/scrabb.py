@@ -71,12 +71,13 @@ class Board:
         row = positions[0][0]
         col = positions[0][1]
 
-        if all(p[0] == row for p in positions[1:]):
+        if all(p[0] == row for p in positions):
             print("Horizontal")
             return Orientation.HORIZONTAL
-        if all(p[1] == col for p in positions[1:]):
+        if all(p[1] == col for p in positions):
             print("Vertical")
             return Orientation.VERTICAL
+
         return Orientation.NONE
 
     def is_valid_play(self, positions):
@@ -91,11 +92,11 @@ class Board:
         if orientation == Orientation.NONE:
             return False
 
-        for p in positions:
-            # check each cell isn't already full
-            if self._board[p[0]][p[1]] is not None:
-                return False
+        # check each cell isn't already full
+        if any(self._board[p[0]][p[1]] is not None for p in positions):
+            return False
 
+        for p in positions:
             # if not first play, check that play touches existing letters
             if not self.is_empty and not touching:
                 # check above, if not at top row
