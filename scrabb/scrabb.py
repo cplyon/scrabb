@@ -128,20 +128,17 @@ class Board:
                 return False
 
         # check that all played letters are connected
-        if orientation == Orientation.HORIZONTAL:
-            print("H check", positions)
-            for i in range(min(positions, key=lambda x: x[1])[1],
-                           max(positions, key=lambda x: x[1])[1]+1):
-                if (positions[0][0], i) not in positions:
-                    print("H check false")
-                    return False
-        elif orientation == Orientation.VERTICAL:
-            print("V check", positions)
-            for i in range(min(positions, key=lambda x: x[0])[0],
-                           max(positions, key=lambda x: x[0])[0]+1):
-                if (i, positions[0][0]) not in positions:
-                    print("V check false")
-                    return False
+
+        if orientation == Orientation.HORIZONTAL and \
+                any((positions[0][0], i) not in positions
+                    for i in range(min(positions, key=lambda x: x[1])[1],
+                    max(positions, key=lambda x: x[1])[1]+1)):
+            return False
+        elif orientation == Orientation.VERTICAL and \
+            any((i, positions[0][0]) not in positions
+                for i in range(min(positions, key=lambda x: x[0])[0],
+                max(positions, key=lambda x: x[0])[0]+1)):
+            return False
 
         return True
 
