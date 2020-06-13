@@ -12,6 +12,7 @@ from enum import Enum
 
 
 class Orientation(Enum):
+    NONE = 0
     HORIZONTAL = 1
     VERTICAL = 2
 
@@ -50,53 +51,49 @@ class Board:
         return printable_board
 
     def play_letters(self, letter_positions):
-        score = 0
         if not self.is_valid_play(list(letter_positions.keys())):
             return -1
         for p in letter_positions:
             self._board[p[0]][p[1]] = letter_positions[p]
-            score += letter_positions[p].score
             self.is_empty = False
-
-        # TODO: need to calculate full score based on existing letters
+        score = self.calculate_score(letter_positions)
         return score
 
-    def remove_letters(self, positions):
-        pass
+    def calculate_score(self, letter_positions):
+        score = 0
+        # calculate simple score first
+        for p in letter_positions:
+            score += letter_positions[p].score
+        return score
+
+    def get_orientation(self, positions):
+        # determine word orientation
+        row = positions[0][0]
+        col = positions[0][1]
+
+        if all(p[0] == row for p in positions[1:]):
+            print("Horizontal")
+            return Orientation.HORIZONTAL
+        if all(p[1] == col for p in positions[1:]):
+            print("Vertical")
+            return Orientation.VERTICAL
+        return Orientation.NONE
 
     def is_valid_play(self, positions):
-        row = -1
-        col = -1
-        orientation = None
         touching = False
 
         # check that first play is on middle cell
-        if self.is_empty:
-            if Board.MIDDLE not in positions:
-                return False
+        if self.is_empty and Board.MIDDLE not in positions:
+            return False
+
+        # determine orientation of the word
+        orientation = self.get_orientation(positions)
+        if orientation == Orientation.NONE:
+            return False
 
         for p in positions:
-            # check that cell isn't already full
+            # check each cell isn't already full
             if self._board[p[0]][p[1]] is not None:
-                return False
-
-            # check that all letters are in the same col or row and
-            # determine word orientation
-            if orientation is None:
-                if row == -1 or col == -1:
-                    row = positions[0][0]
-                    col = positions[0][1]
-                elif p[0] == row:
-                    print("Horizontal")
-                    orientation = Orientation.HORIZONTAL
-                elif p[1] == col:
-                    print("Vertical")
-                    orientation = Orientation.VERTICAL
-                else:
-                    return False
-            elif orientation == Orientation.HORIZONTAL and p[0] != row:
-                return False
-            elif orientation == Orientation.VERTICAL and p[1] != col:
                 return False
 
             # if not first play, check that play touches existing letters

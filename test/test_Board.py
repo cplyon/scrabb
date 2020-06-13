@@ -10,6 +10,7 @@ import unittest
 
 from scrabb.scrabb import Board
 from scrabb.scrabb import Letter
+from scrabb.scrabb import Orientation
 
 
 class BoardTest(unittest.TestCase):
@@ -98,13 +99,34 @@ class BoardTest(unittest.TestCase):
         board.is_empty = False
         is_valid = board.is_valid_play([(Board.MIDDLE[0]+1, Board.MIDDLE[1])])
         self.assertTrue(is_valid)
-    
+
     def test_validate_touching_below(self):
         board = Board()
         board._board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         board.is_empty = False
         is_valid = board.is_valid_play([(Board.MIDDLE[0]-1, Board.MIDDLE[1])])
         self.assertTrue(is_valid)
+
+    def test_get_orientation_single(self):
+        board = Board()
+        orientation = board.get_orientation([Board.MIDDLE])
+        self.assertEqual(orientation, Orientation.HORIZONTAL)
+
+    def test_get_orientation_horizontal(self):
+        board = Board()
+        orientation = board.get_orientation([Board.MIDDLE, (Board.MIDDLE[0], Board.MIDDLE[1]+1)])
+        self.assertEqual(orientation, Orientation.HORIZONTAL)
+
+    def test_get_orientation_vertical(self):
+        board = Board()
+        orientation = board.get_orientation([Board.MIDDLE, (Board.MIDDLE[0]+1, Board.MIDDLE[1])])
+        self.assertEqual(orientation, Orientation.VERTICAL)
+
+    def test_get_orientation_none(self):
+        board = Board()
+        orientation = board.get_orientation([Board.MIDDLE, (Board.MIDDLE[0]+1, Board.MIDDLE[1]+1)])
+        self.assertEqual(orientation, Orientation.NONE)
+
 
 if __name__ == "__main__":
     logging.basicConfig(stream=sys.stderr)
