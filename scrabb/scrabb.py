@@ -8,7 +8,16 @@
 import math
 
 from collections_extended import bag
-from enum import Enum
+from enum import Enum, auto
+
+
+class ValidationReason(Enum):
+    FIRST_PLAY_NOT_ON_MIDDLE_CELL = auto()
+    CELL_ALREADY_FULL = auto()
+    INVALID_ORIENTATION = auto()
+    NOT_TOUCHING_EXISTING = auto()
+    NOT_ALL_CONNECTED = auto()
+    VALID = auto()
 
 
 class Orientation(Enum):
@@ -51,7 +60,8 @@ class Board:
         return printable_board
 
     def play_letters(self, letter_positions):
-        if not self.is_valid_play(list(letter_positions.keys())):
+        if self.is_valid_play(list(letter_positions.keys())) != \
+                ValidationReason.VALID:
             return -1
         for p in letter_positions:
             self._board[p[0]][p[1]] = letter_positions[p]
@@ -83,22 +93,21 @@ class Board:
         return orientation
 
     def is_valid_play(self, positions):
-        touching = False
-
         # check that first play is on middle cell
         if self.is_empty and Board.MIDDLE not in positions:
-            return False
+            return ValidationReason.FIRST_PLAY_NOT_ON_MIDDLE_CELL
 
         # check each cell isn't already full
         if any(self._board[p[0]][p[1]] is not None for p in positions):
-            return False
+            return ValidationReason.CELL_ALREADY_FULL
 
         # determine orientation of the word, bail if we can't
         orientation = self.get_orientation(positions)
         if orientation == Orientation.NONE:
-            return False
+            return ValidationReason.INVALID_ORIENTATION
 
         # if not first play, check that play touches existing letters
+        touching = False
         if not self.is_empty:
             for p in positions:
                 # check above, if not at top row
@@ -127,7 +136,7 @@ class Board:
             # not valid if none touching
             if not touching:
                 print("not touching")
-                return False
+                return ValidationReason.NOT_TOUCHING_EXISTING
 
         # check that all played letters are connected to each other
         # or to previously played letters
@@ -136,16 +145,16 @@ class Board:
                            max(positions, key=lambda x: x[1])[1]+1):
                 if (positions[0][0], i) not in positions and \
                         self._board[positions[0][0]][i] is None:
-                    return False
+                    return ValidationReason.NOT_ALL_CONNECTED
 
         if orientation == Orientation.VERTICAL:
             for i in range(min(positions, key=lambda x: x[0])[0],
                            max(positions, key=lambda x: x[0])[0]+1):
                 if (i, positions[0][1]) not in positions and \
                         self._board[i][positions[0][1]] is None:
-                    return False
+                    return ValidationReason.NOT_ALL_CONNECTED
 
-        return True
+        return ValidationReason.VALID
 
 
 class Player:
