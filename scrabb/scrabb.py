@@ -67,18 +67,20 @@ class Board:
         return score
 
     def get_orientation(self, positions):
-        # determine word orientation
+        # determine word orientation, or NONE if we can't
+        # default to HORIZONTAL in the edge case of single-letter
         row = positions[0][0]
         col = positions[0][1]
+        orientation = Orientation.NONE
 
         if all(p[0] == row for p in positions):
             print("Horizontal")
-            return Orientation.HORIZONTAL
-        if all(p[1] == col for p in positions):
+            orientation = Orientation.HORIZONTAL
+        elif all(p[1] == col for p in positions):
             print("Vertical")
-            return Orientation.VERTICAL
+            orientation = Orientation.VERTICAL
 
-        return Orientation.NONE
+        return orientation
 
     def is_valid_play(self, positions):
         touching = False
@@ -87,13 +89,13 @@ class Board:
         if self.is_empty and Board.MIDDLE not in positions:
             return False
 
-        # determine orientation of the word
-        orientation = self.get_orientation(positions)
-        if orientation == Orientation.NONE:
-            return False
-
         # check each cell isn't already full
         if any(self._board[p[0]][p[1]] is not None for p in positions):
+            return False
+
+        # determine orientation of the word, bail if we can't
+        orientation = self.get_orientation(positions)
+        if orientation == Orientation.NONE:
             return False
 
         # if not first play, check that play touches existing letters
@@ -127,18 +129,21 @@ class Board:
                 print("not touching")
                 return False
 
-        # check that all played letters are connected
+        # check that all played letters are connected to each other
+        # or to previously played letters
+        if orientation == Orientation.HORIZONTAL:
+            for i in range(min(positions, key=lambda x: x[1])[1],
+                           max(positions, key=lambda x: x[1])[1]+1):
+                if (positions[0][0], i) not in positions and \
+                        self._board[positions[0][0]][i] is None:
+                    return False
 
-        if orientation == Orientation.HORIZONTAL and \
-                any((positions[0][0], i) not in positions
-                    for i in range(min(positions, key=lambda x: x[1])[1],
-                    max(positions, key=lambda x: x[1])[1]+1)):
-            return False
-        elif orientation == Orientation.VERTICAL and \
-            any((i, positions[0][0]) not in positions
-                for i in range(min(positions, key=lambda x: x[0])[0],
-                max(positions, key=lambda x: x[0])[0]+1)):
-            return False
+        if orientation == Orientation.VERTICAL:
+            for i in range(min(positions, key=lambda x: x[0])[0],
+                           max(positions, key=lambda x: x[0])[0]+1):
+                if (i, positions[0][1]) not in positions and \
+                        self._board[i][positions[0][1]] is None:
+                    return False
 
         return True
 
