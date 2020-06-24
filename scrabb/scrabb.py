@@ -83,7 +83,6 @@ class Board:
 
     def get_orientation(self, positions):
         # Determine word orientation, or NONE if we can't.
-        # Default to HORIZONTAL in the edge case of single-letter.
         row = positions[0][0]
         col = positions[0][1]
         orientation = Orientation.NONE
