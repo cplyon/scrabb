@@ -13,6 +13,7 @@ from enum import Enum, auto
 
 class ValidationReason(Enum):
     FIRST_PLAY_NOT_ON_MIDDLE_CELL = auto()
+    FIRST_PLAY_TOO_FEW_TILES = auto()
     CELL_ALREADY_FULL = auto()
     INVALID_ORIENTATION = auto()
     NOT_TOUCHING_EXISTING = auto()
@@ -60,16 +61,20 @@ class Board:
         return printable_board
 
     def play_letters(self, letter_positions):
+        # reject play if not valid
         if self.is_valid_play(list(letter_positions.keys())) != \
                 ValidationReason.VALID:
             return -1
+        # place letters
         for p in letter_positions:
             self._board[p[0]][p[1]] = letter_positions[p]
-            self.is_empty = False
+        self.is_empty = False
+        # calculate and return score
         score = self.calculate_score(letter_positions)
         return score
 
     def calculate_score(self, letter_positions):
+        # TODO: calculate score for all words found
         score = 0
         # calculate simple score first
         for p in letter_positions:
@@ -77,8 +82,8 @@ class Board:
         return score
 
     def get_orientation(self, positions):
-        # determine word orientation, or NONE if we can't
-        # default to HORIZONTAL in the edge case of single-letter
+        # Determine word orientation, or NONE if we can't.
+        # Default to HORIZONTAL in the edge case of single-letter.
         row = positions[0][0]
         col = positions[0][1]
         orientation = Orientation.NONE
@@ -93,9 +98,13 @@ class Board:
         return orientation
 
     def is_valid_play(self, positions):
-        # check that first play is on middle cell
-        if self.is_empty and Board.MIDDLE not in positions:
-            return ValidationReason.FIRST_PLAY_NOT_ON_MIDDLE_CELL
+        # check that first play is on middle cell and is at least
+        # 2 letters
+        if self.is_empty:
+            if Board.MIDDLE not in positions:
+                return ValidationReason.FIRST_PLAY_NOT_ON_MIDDLE_CELL
+            if len(positions) < 2:
+                return ValidationReason.FIRST_PLAY_TOO_FEW_TILES
 
         # check each cell isn't already full
         if any(self._board[p[0]][p[1]] is not None for p in positions):
@@ -140,18 +149,18 @@ class Board:
 
         # check that all played letters are connected to each other
         # or to previously played letters
+        row = positions[0][0]
+        col = positions[0][1]
         if orientation == Orientation.HORIZONTAL:
             for i in range(min(positions, key=lambda x: x[1])[1],
                            max(positions, key=lambda x: x[1])[1]+1):
-                if (positions[0][0], i) not in positions and \
-                        self._board[positions[0][0]][i] is None:
+                if (row, i) not in positions and self._board[row][i] is None:
                     return ValidationReason.NOT_ALL_CONNECTED
 
         if orientation == Orientation.VERTICAL:
             for i in range(min(positions, key=lambda x: x[0])[0],
                            max(positions, key=lambda x: x[0])[0]+1):
-                if (i, positions[0][1]) not in positions and \
-                        self._board[i][positions[0][1]] is None:
+                if (i, col) not in positions and self._board[i][col] is None:
                     return ValidationReason.NOT_ALL_CONNECTED
 
         return ValidationReason.VALID
@@ -211,6 +220,7 @@ class LetterBag:
             self._letters.add(Letter('E', 1))
 
     def draw_letters(self, num_letters):
+        # TODO: randomize draw
         drawn_letters = []
         for _ in range(max(num_letters, len(self._letters))):
             drawn_letters.append(self._letters.pop())

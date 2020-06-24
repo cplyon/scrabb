@@ -35,9 +35,17 @@ class BoardTest(unittest.TestCase):
         self.assertEqual(is_valid,
                          ValidationReason.FIRST_PLAY_NOT_ON_MIDDLE_CELL)
 
+    def test_validate_first_play_too_short(self):
+        board = Board()
+        board._board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
+        is_valid = board.is_valid_play([Board.MIDDLE])
+        self.assertEqual(is_valid,
+                         ValidationReason.FIRST_PLAY_TOO_FEW_TILES)
+
     def test_validate_cell_full(self):
         board = Board()
         board._board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
+        board.is_empty = False
         is_valid = board.is_valid_play([Board.MIDDLE])
         self.assertEqual(is_valid,
                          ValidationReason.CELL_ALREADY_FULL)
