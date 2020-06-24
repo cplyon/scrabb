@@ -75,14 +75,20 @@ class Board:
 
     def calculate_score(self, letter_positions):
         # TODO: calculate score for all words found
+        # TODO: calculate cell bonuses
         score = 0
         # calculate simple score first
         for p in letter_positions:
             score += letter_positions[p].score
+
+        # bingo bonus
+        if len(letter_positions) == 7:
+            score += 50
         return score
 
     def get_orientation(self, positions):
         # Determine word orientation, or NONE if we can't.
+        # TODO: how to handle single letter play?
         row = positions[0][0]
         col = positions[0][1]
         orientation = Orientation.NONE

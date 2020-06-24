@@ -165,6 +165,29 @@ class BoardTest(unittest.TestCase):
                                               Board.MIDDLE[1]+1)])
         self.assertEqual(orientation, Orientation.NONE)
 
+    def test_calculate_score_simple(self):
+        board = Board()
+        board._board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
+        board.is_empty = False
+        score = board.calculate_score(
+            {(Board.MIDDLE[0], Board.MIDDLE[1]+1): Letter('A', 1)})
+        self.assertEqual(score, 2)
+
+    def test_calculate_score_bingo(self):
+        board = Board()
+        board._board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
+        board.is_empty = False
+        score = board.calculate_score({
+            (Board.MIDDLE[0], Board.MIDDLE[1]+1): Letter('A', 1),
+            (Board.MIDDLE[0], Board.MIDDLE[1]+2): Letter('A', 1),
+            (Board.MIDDLE[0], Board.MIDDLE[1]+3): Letter('A', 1),
+            (Board.MIDDLE[0], Board.MIDDLE[1]+4): Letter('A', 1),
+            (Board.MIDDLE[0], Board.MIDDLE[1]+5): Letter('A', 1),
+            (Board.MIDDLE[0], Board.MIDDLE[1]+6): Letter('A', 1),
+            (Board.MIDDLE[0], Board.MIDDLE[1]+7): Letter('A', 1)
+            })
+        self.assertEqual(score, 58)
+
 
 if __name__ == "__main__":
     logging.basicConfig(stream=sys.stderr)
