@@ -6,7 +6,6 @@
 
 import math
 from .letterbag import LetterBag
-from collections_extended import bag
 from enum import Enum, auto
 
 
@@ -181,14 +180,6 @@ class Board:
                     return ValidationReason.NOT_ALL_CONNECTED
 
         return ValidationReason.VALID
-
-
-class Player:
-
-    def __init__(self, name):
-        self.name = name
-        self.score = 0
-        self.letters = bag()
 
 
 class Game:
