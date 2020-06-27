@@ -9,7 +9,7 @@ import sys
 import unittest
 
 from scrabb.scrabb import Board
-from scrabb.scrabb import Letter
+from scrabb.letter import Letter
 from scrabb.scrabb import Orientation
 from scrabb.scrabb import ValidationReason
 
