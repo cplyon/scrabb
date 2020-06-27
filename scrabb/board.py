@@ -43,6 +43,9 @@ class Board:
     def __getitem__(self, key):
         return self._board[key]
 
+    def __setitem__(self, key, item):
+        self._board[key] = item
+
     def place_letters(self, letter_positions):
         # place letters
         for p in letter_positions:
