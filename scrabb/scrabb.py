@@ -47,8 +47,8 @@ class Board:
     def __init__(self):
         self._board = [[None for _ in range(Board.SIZE)]
                        for _ in range(Board.SIZE)]
-        """
-        self.double_letter_cells = set(
+
+        self.double_letter_cells = {
             (3, 0), (11, 0),
             (6, 2), (8, 2),
             (0, 3), (7, 3), (14, 3),
@@ -58,8 +58,8 @@ class Board:
             (0, 11), (7, 11), (14, 11),
             (6, 12), (8, 12),
             (3, 14), (11, 14)
-        )
-        """
+        }
+
         self.is_empty = True
 
     def __str__(self):
