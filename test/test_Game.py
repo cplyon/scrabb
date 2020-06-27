@@ -78,7 +78,7 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board.is_empty = False
         is_valid = game.is_valid_play([(Board.MIDDLE[0], Board.MIDDLE[1]+4)],
-                                       Orientation.HORIZONTAL)
+                                      Orientation.HORIZONTAL)
         self.assertEqual(is_valid,
                          ValidationReason.NOT_TOUCHING_EXISTING)
 
@@ -87,7 +87,7 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board.is_empty = False
         is_valid = game.is_valid_play([(Board.MIDDLE[0], Board.MIDDLE[1]-1)],
-                                       Orientation.HORIZONTAL)
+                                      Orientation.HORIZONTAL)
         self.assertEqual(is_valid, ValidationReason.VALID)
 
     def test_validate_touching_right(self):
@@ -95,7 +95,7 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board.is_empty = False
         is_valid = game.is_valid_play([(Board.MIDDLE[0], Board.MIDDLE[1]+1)],
-                                       Orientation.HORIZONTAL)
+                                      Orientation.HORIZONTAL)
         self.assertEqual(is_valid, ValidationReason.VALID)
 
     def test_validate_touching_above(self):
@@ -103,7 +103,7 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board.is_empty = False
         is_valid = game.is_valid_play([(Board.MIDDLE[0]+1, Board.MIDDLE[1])],
-                                       Orientation.HORIZONTAL)
+                                      Orientation.HORIZONTAL)
         self.assertEqual(is_valid, ValidationReason.VALID)
 
     def test_validate_touching_below(self):
@@ -111,7 +111,7 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board.is_empty = False
         is_valid = game.is_valid_play([(Board.MIDDLE[0]-1, Board.MIDDLE[1])],
-                                       Orientation.HORIZONTAL)
+                                      Orientation.HORIZONTAL)
         self.assertEqual(is_valid, ValidationReason.VALID)
 
     def test_validate_prefix_suffix_horizontal(self):
@@ -119,8 +119,8 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board.is_empty = False
         is_valid = game.is_valid_play([(Board.MIDDLE[0], Board.MIDDLE[1]-1),
-                                        (Board.MIDDLE[0], Board.MIDDLE[1]+1)],
-                                       Orientation.HORIZONTAL)
+                                       (Board.MIDDLE[0], Board.MIDDLE[1]+1)],
+                                      Orientation.HORIZONTAL)
         self.assertEqual(is_valid, ValidationReason.VALID)
 
     def test_validate_prefix_suffix_vertical(self):
@@ -128,8 +128,8 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board.is_empty = False
         is_valid = game.is_valid_play([(Board.MIDDLE[0]-1, Board.MIDDLE[1]),
-                                        (Board.MIDDLE[0]+1, Board.MIDDLE[1])],
-                                       Orientation.VERTICAL)
+                                      (Board.MIDDLE[0]+1, Board.MIDDLE[1])],
+                                      Orientation.VERTICAL)
         self.assertEqual(is_valid, ValidationReason.VALID)
 
     # Get Orientation Tests
@@ -141,22 +141,22 @@ class GameTest(unittest.TestCase):
     def test_get_orientation_horizontal(self):
         game = Game()
         orientation = game.get_orientation([Board.MIDDLE,
-                                             (Board.MIDDLE[0],
-                                              Board.MIDDLE[1]+1)])
+                                            (Board.MIDDLE[0],
+                                             Board.MIDDLE[1]+1)])
         self.assertEqual(orientation, Orientation.HORIZONTAL)
 
     def test_get_orientation_vertical(self):
         game = Game()
         orientation = game.get_orientation([Board.MIDDLE,
-                                             (Board.MIDDLE[0]+1,
-                                              Board.MIDDLE[1])])
+                                            (Board.MIDDLE[0]+1,
+                                             Board.MIDDLE[1])])
         self.assertEqual(orientation, Orientation.VERTICAL)
 
     def test_get_orientation_none(self):
         game = Game()
         orientation = game.get_orientation([Board.MIDDLE,
-                                             (Board.MIDDLE[0]+1,
-                                              Board.MIDDLE[1]+1)])
+                                            (Board.MIDDLE[0]+1,
+                                             Board.MIDDLE[1]+1)])
         self.assertEqual(orientation, Orientation.NONE)
 
     # Calculate Score Tests
