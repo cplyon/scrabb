@@ -47,6 +47,19 @@ class Board:
     def __init__(self):
         self._board = [[None for _ in range(Board.SIZE)]
                        for _ in range(Board.SIZE)]
+        """
+        self.double_letter_cells = set(
+            (3, 0), (11, 0),
+            (6, 2), (8, 2),
+            (0, 3), (7, 3), (14, 3),
+            (2, 6), (6, 6), (8, 6), (12, 6),
+            (3, 7), (11, 7),
+            (2, 8), (6, 8), (8, 8), (12, 8),
+            (0, 11), (7, 11), (14, 11),
+            (6, 12), (8, 12),
+            (3, 14), (11, 14)
+        )
+        """
         self.is_empty = True
 
     def __str__(self):
@@ -61,8 +74,21 @@ class Board:
         return printable_board
 
     def play_letters(self, letter_positions):
+
+        # get just the letter positions
+        positions = list(letter_positions.keys())
+
+        # determine orientation
+        orientation = self.get_orientation(positions)
+
+        # sort positions
+        if orientation == Orientation.HORIZONTAL:
+            sorted(positions, key=lambda x: x[0])
+        elif orientation == Orientation.VERTICAL:
+            sorted(positions, key=lambda x: x[1])
+
         # reject play if not valid
-        if self.is_valid_play(list(letter_positions.keys())) != \
+        if self.is_valid_play(positions, orientation) != \
                 ValidationReason.VALID:
             return -1
         # place letters
@@ -102,7 +128,12 @@ class Board:
 
         return orientation
 
-    def is_valid_play(self, positions):
+    def is_valid_play(self, positions, orientation):
+
+        # check orientation
+        if orientation == Orientation.NONE:
+            return ValidationReason.INVALID_ORIENTATION
+
         # check that first play is on middle cell and is at least
         # 2 letters
         if self.is_empty:
@@ -114,11 +145,6 @@ class Board:
         # check each cell isn't already full
         if any(self._board[p[0]][p[1]] is not None for p in positions):
             return ValidationReason.CELL_ALREADY_FULL
-
-        # determine orientation of the word, bail if we can't
-        orientation = self.get_orientation(positions)
-        if orientation == Orientation.NONE:
-            return ValidationReason.INVALID_ORIENTATION
 
         # if not first play, check that play touches existing letters
         touching = False

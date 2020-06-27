@@ -24,21 +24,23 @@ class BoardTest(unittest.TestCase):
         is_valid = board.is_valid_play(
             [Board.MIDDLE,
                 (Board.MIDDLE[0], Board.MIDDLE[1] + 1),
-                (Board.MIDDLE[0], Board.MIDDLE[1] + 2)])
+                (Board.MIDDLE[0], Board.MIDDLE[1] + 2)],
+            Orientation.HORIZONTAL)
         self.assertEqual(is_valid, ValidationReason.VALID)
 
     def test_validate_middle_false(self):
         board = Board()
         is_valid = board.is_valid_play(
             [(Board.MIDDLE[0], Board.MIDDLE[1] + 1),
-                (Board.MIDDLE[0], Board.MIDDLE[1] + 2)])
+                (Board.MIDDLE[0], Board.MIDDLE[1] + 2)],
+            Orientation.HORIZONTAL)
         self.assertEqual(is_valid,
                          ValidationReason.FIRST_PLAY_NOT_ON_MIDDLE_CELL)
 
     def test_validate_first_play_too_short(self):
         board = Board()
         board._board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
-        is_valid = board.is_valid_play([Board.MIDDLE])
+        is_valid = board.is_valid_play([Board.MIDDLE], Orientation.HORIZONTAL)
         self.assertEqual(is_valid,
                          ValidationReason.FIRST_PLAY_TOO_FEW_TILES)
 
@@ -46,34 +48,17 @@ class BoardTest(unittest.TestCase):
         board = Board()
         board._board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         board.is_empty = False
-        is_valid = board.is_valid_play([Board.MIDDLE])
+        is_valid = board.is_valid_play([Board.MIDDLE], Orientation.HORIZONTAL)
         self.assertEqual(is_valid,
                          ValidationReason.CELL_ALREADY_FULL)
-
-    def test_validate_not_in_same_row(self):
-        board = Board()
-        is_valid = board.is_valid_play(
-            [Board.MIDDLE,
-                (Board.MIDDLE[0], Board.MIDDLE[1] + 1),
-                (Board.MIDDLE[0]+1, Board.MIDDLE[1] + 2)])
-        self.assertEqual(is_valid,
-                         ValidationReason.INVALID_ORIENTATION)
-
-    def test_validate_not_in_same_column(self):
-        board = Board()
-        is_valid = board.is_valid_play(
-            [Board.MIDDLE,
-                (Board.MIDDLE[0]+1, Board.MIDDLE[1]),
-                (Board.MIDDLE[0]+2, Board.MIDDLE[1] + 1)])
-        self.assertEqual(is_valid,
-                         ValidationReason.INVALID_ORIENTATION)
 
     def test_validate_noncontiguous_horizontal(self):
         board = Board()
         is_valid = board.is_valid_play(
             [Board.MIDDLE,
                 (Board.MIDDLE[0], Board.MIDDLE[1] + 1),
-                (Board.MIDDLE[0], Board.MIDDLE[1] + 3)])
+                (Board.MIDDLE[0], Board.MIDDLE[1] + 3)],
+            Orientation.HORIZONTAL)
         self.assertEqual(is_valid,
                          ValidationReason.NOT_ALL_CONNECTED)
 
@@ -82,7 +67,8 @@ class BoardTest(unittest.TestCase):
         is_valid = board.is_valid_play(
             [Board.MIDDLE,
                 (Board.MIDDLE[0]+1, Board.MIDDLE[1]),
-                (Board.MIDDLE[0]+3, Board.MIDDLE[1])])
+                (Board.MIDDLE[0]+3, Board.MIDDLE[1])],
+            Orientation.VERTICAL)
         self.assertEqual(is_valid,
                          ValidationReason.NOT_ALL_CONNECTED)
 
@@ -90,7 +76,8 @@ class BoardTest(unittest.TestCase):
         board = Board()
         board._board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         board.is_empty = False
-        is_valid = board.is_valid_play([(Board.MIDDLE[0], Board.MIDDLE[1]+4)])
+        is_valid = board.is_valid_play([(Board.MIDDLE[0], Board.MIDDLE[1]+4)],
+                                       Orientation.HORIZONTAL)
         self.assertEqual(is_valid,
                          ValidationReason.NOT_TOUCHING_EXISTING)
 
@@ -98,28 +85,32 @@ class BoardTest(unittest.TestCase):
         board = Board()
         board._board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         board.is_empty = False
-        is_valid = board.is_valid_play([(Board.MIDDLE[0], Board.MIDDLE[1]-1)])
+        is_valid = board.is_valid_play([(Board.MIDDLE[0], Board.MIDDLE[1]-1)],
+                                       Orientation.HORIZONTAL)
         self.assertEqual(is_valid, ValidationReason.VALID)
 
     def test_validate_touching_right(self):
         board = Board()
         board._board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         board.is_empty = False
-        is_valid = board.is_valid_play([(Board.MIDDLE[0], Board.MIDDLE[1]+1)])
+        is_valid = board.is_valid_play([(Board.MIDDLE[0], Board.MIDDLE[1]+1)],
+                                       Orientation.HORIZONTAL)
         self.assertEqual(is_valid, ValidationReason.VALID)
 
     def test_validate_touching_above(self):
         board = Board()
         board._board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         board.is_empty = False
-        is_valid = board.is_valid_play([(Board.MIDDLE[0]+1, Board.MIDDLE[1])])
+        is_valid = board.is_valid_play([(Board.MIDDLE[0]+1, Board.MIDDLE[1])],
+                                       Orientation.HORIZONTAL)
         self.assertEqual(is_valid, ValidationReason.VALID)
 
     def test_validate_touching_below(self):
         board = Board()
         board._board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         board.is_empty = False
-        is_valid = board.is_valid_play([(Board.MIDDLE[0]-1, Board.MIDDLE[1])])
+        is_valid = board.is_valid_play([(Board.MIDDLE[0]-1, Board.MIDDLE[1])],
+                                       Orientation.HORIZONTAL)
         self.assertEqual(is_valid, ValidationReason.VALID)
 
     def test_validate_prefix_suffix_horizontal(self):
@@ -127,7 +118,8 @@ class BoardTest(unittest.TestCase):
         board._board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         board.is_empty = False
         is_valid = board.is_valid_play([(Board.MIDDLE[0], Board.MIDDLE[1]-1),
-                                        (Board.MIDDLE[0], Board.MIDDLE[1]+1)])
+                                        (Board.MIDDLE[0], Board.MIDDLE[1]+1)],
+                                       Orientation.HORIZONTAL)
         self.assertEqual(is_valid, ValidationReason.VALID)
 
     def test_validate_prefix_suffix_vertical(self):
@@ -135,7 +127,8 @@ class BoardTest(unittest.TestCase):
         board._board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         board.is_empty = False
         is_valid = board.is_valid_play([(Board.MIDDLE[0]-1, Board.MIDDLE[1]),
-                                        (Board.MIDDLE[0]+1, Board.MIDDLE[1])])
+                                        (Board.MIDDLE[0]+1, Board.MIDDLE[1])],
+                                       Orientation.VERTICAL)
         self.assertEqual(is_valid, ValidationReason.VALID)
 
     # Get Orientation Tests
@@ -165,6 +158,7 @@ class BoardTest(unittest.TestCase):
                                               Board.MIDDLE[1]+1)])
         self.assertEqual(orientation, Orientation.NONE)
 
+    # Calculate Score Tests
     def test_calculate_score_simple(self):
         board = Board()
         board._board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
