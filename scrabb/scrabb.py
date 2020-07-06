@@ -39,26 +39,53 @@ class Game:
         # determine orientation
         orientation = self.get_orientation(positions)
 
+        # reject play if not valid
+        if self.is_valid_play(positions, orientation) != \
+                ValidationReason.VALID:
+            return -1
+
+        # find all words
+        words = self.find_words(orientation, letter_positions)
+
+        # calculate score
+        score = 0
+        for word in words:
+            score += self.calculate_score(positions, letter_positions)
+
+        # place the letters on the board
+        self.board.place_letters(letter_positions)
+
+        return score
+
+    def find_words(self, orientation, letter_positions):
         # sort positions
+        positions = list(letter_positions.keys())
         if orientation == Orientation.HORIZONTAL:
             sorted(positions, key=lambda x: x[0])
         elif orientation == Orientation.VERTICAL:
             sorted(positions, key=lambda x: x[1])
 
-        # reject play if not valid
-        if self.is_valid_play(positions, orientation) != \
-                ValidationReason.VALID:
-            return -1
-        # calculate and return score
-        score = self.calculate_score(letter_positions)
-        return score
+        # find all words and store in a collection of tuples or dicts?
+        # if horizontal:
+        # first, calculate main word
+        # include the non-empty cells to the left of the first letter
+        # include the non-empty cells to the right of the last letter
+        # add this word to collection
+        # now find adjacent words
+        # for each letter played, if above cell is not empty:
+        # include all non-empty cells above the current letter
+        # include all non-empty cells below the current letter
+        # add this word to collection
+        # number of words is between 1 and (1 + len(positions))
+        # modify and repeat for vertical play
+        return None
 
     def calculate_score(self, letter_positions):
-        # TODO: calculate score for all words found
-        # TODO: calculate cell bonuses
         score = 0
-        # calculate simple score first
+
+        # calculate letter scores
         for p in letter_positions:
+            # TODO: calculate cell bonuses
             score += letter_positions[p].score
 
         # bingo bonus
