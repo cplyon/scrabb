@@ -13,7 +13,7 @@ setuptools.setup(
     author='Chris Lyon',
     author_email='chris@cplyon.ca',
     packages=setuptools.find_packages(),
-    install_requires=['collections_extended'],
+    install_requires=['collections-extended'],
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',
