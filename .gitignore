@@ -1,2 +1,5 @@
 .vscode/settings.json
 *.pyc
+scrabb.egg-info/
+dist/
+build/
