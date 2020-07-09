@@ -6,7 +6,7 @@
 
 from .board import Board
 from .letterbag import LetterBag
-from enum import Enum, auto
+from enum import Enum, Flag, auto
 
 
 class ValidationReason(Enum):
@@ -23,6 +23,14 @@ class Orientation(Enum):
     NONE = 0
     HORIZONTAL = 1
     VERTICAL = 2
+
+
+class TouchingDirection(Flag):
+    NONE = 0
+    ABOVE = auto()
+    BELOW = auto()
+    LEFT = auto()
+    RIGHT = auto()
 
 
 class Game:
@@ -109,6 +117,31 @@ class Game:
 
         return orientation
 
+    def is_touching(self, position):
+        touching_direction = TouchingDirection.NONE
+        # check above, if not at top row
+        if position[0] > 0 and \
+                self.board[position[0]+1][position[1]] is not None:
+            print("touching above")
+            touching_direction |= TouchingDirection.ABOVE
+        # check below, if not at bottom row
+        if position[0] < Board.SIZE-1 and \
+                self.board[position[0]-1][position[1]] is not None:
+            print("touching below")
+            touching_direction |= TouchingDirection.BELOW
+        # check left, if not at left column
+        if position[1] > 0 and \
+                self.board[position[0]][position[1]-1] is not None:
+            print("touching left")
+            touching_direction |= TouchingDirection.LEFT
+        # check right, if not at right column
+        if position[1] < Board.SIZE-1 and \
+                self.board[position[0]][position[1]+1] is not None:
+            print("touching right")
+            touching_direction |= TouchingDirection.RIGHT
+
+        return touching_direction
+
     def is_valid_play(self, positions, orientation):
 
         # check orientation
@@ -122,41 +155,17 @@ class Game:
                 return ValidationReason.FIRST_PLAY_NOT_ON_MIDDLE_CELL
             if len(positions) < 2:
                 return ValidationReason.FIRST_PLAY_TOO_FEW_TILES
+        else:
+            # check each cell isn't already full
+            if any(self.board[p[0]][p[1]] is not None for p in positions):
+                return ValidationReason.CELL_ALREADY_FULL
 
-        # check each cell isn't already full
-        if any(self.board[p[0]][p[1]] is not None for p in positions):
-            return ValidationReason.CELL_ALREADY_FULL
-
-        # if not first play, check that play touches existing letters
-        touching = False
-        if not self.board.is_empty:
+            # check that play touches existing letters
             for p in positions:
-                # check above, if not at top row
-                if p[0] > 0 and self.board[p[0]-1][p[1]] is not None:
-                    print("touching above")
-                    touching = True
+                if self.is_touching(p) != TouchingDirection.NONE:
                     break
-                # check below, if not at bottom row
-                if p[0] < Board.SIZE-1 and \
-                        self.board[p[0]+1][p[1]] is not None:
-                    print("touching below")
-                    touching = True
-                    break
-                # check left, if not at left column
-                if p[1] > 0 and self.board[p[0]][p[1]-1] is not None:
-                    print("touching left")
-                    touching = True
-                    break
-                # check right, if not at right column
-                if p[1] < Board.SIZE-1 and \
-                        self.board[p[0]][p[1]+1] is not None:
-                    print("touching right")
-                    touching = True
-                    break
-
-            # not valid if none touching
-            if not touching:
-                print("not touching")
+            else:
+                # not valid if none touching
                 return ValidationReason.NOT_TOUCHING_EXISTING
 
         # check that all played letters are connected to each other
