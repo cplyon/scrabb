@@ -14,7 +14,7 @@ class ValidationReason(Enum):
     FIRST_PLAY_TOO_FEW_TILES = auto()
     CELL_ALREADY_FULL = auto()
     INVALID_ORIENTATION = auto()
-    NOT_TOUCHING_EXISTING = auto()
+    NOT_ADJACENT = auto()
     NOT_CONTIGUOUS = auto()
     VALID = auto()
 
@@ -25,7 +25,7 @@ class Orientation(Enum):
     VERTICAL = 2
 
 
-class TouchingDirection(Flag):
+class AdjacentDirection(Flag):
     NONE = 0
     ABOVE = auto()
     BELOW = auto()
@@ -115,28 +115,29 @@ class Game:
 
         return orientation
 
-    def is_touching(self, position):
-        # TODO: rename 'touching' to 'adjacent'
+    def is_adjacent(self, position):
         row = position[0]
         col = position[1]
-        touching_direction = TouchingDirection.NONE
+        adjacent_direction = AdjacentDirection.NONE
 
         # check above, if not at top row
         if row > 0 and self.board[row-1][col] is not None:
-            touching_direction |= TouchingDirection.ABOVE
+            adjacent_direction |= AdjacentDirection.ABOVE
         # check below, if not at bottom row
         if row < Board.SIZE-1 and self.board[row+1][col] is not None:
-            touching_direction |= TouchingDirection.BELOW
+            adjacent_direction |= AdjacentDirection.BELOW
         # check left, if not at left column
         if col > 0 and self.board[row][col-1] is not None:
-            touching_direction |= TouchingDirection.LEFT
+            adjacent_direction |= AdjacentDirection.LEFT
         # check right, if not at right column
         if col < Board.SIZE-1 and self.board[row][col+1] is not None:
-            touching_direction |= TouchingDirection.RIGHT
+            adjacent_direction |= AdjacentDirection.RIGHT
 
-        return touching_direction
+        return adjacent_direction
 
     def is_valid_play(self, positions, orientation):
+        # TODO: check for plays too long to fit on board
+
         # check orientation is either Horizonal or Vertical
         if orientation == Orientation.NONE:
             return ValidationReason.INVALID_ORIENTATION
@@ -155,9 +156,9 @@ class Game:
 
             # check that play is adjacent to at least one letter
             # previously on the board
-            if all(self.is_touching(p) == TouchingDirection.NONE
+            if all(self.is_adjacent(p) == AdjacentDirection.NONE
                    for p in positions):
-                return ValidationReason.NOT_TOUCHING_EXISTING
+                return ValidationReason.NOT_ADJACENT
 
         # check that all played letters are contiguous
         if orientation == Orientation.HORIZONTAL:
