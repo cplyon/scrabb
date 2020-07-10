@@ -148,10 +148,15 @@ class GameTest(unittest.TestCase):
 
     # Play Letters Tests
     def test_play_letters_invalid(self):
+        position = (Board.MIDDLE[0], Board.MIDDLE[1]+4)
         game = Game()
-        with self.assertRaises(InvalidPlayException):
+        with self.assertRaises(InvalidPlayException) as e:
             game.play_letters(
-                {(Board.MIDDLE[0], Board.MIDDLE[1]+4): Letter('A', 1)})
+                {position: Letter('A', 1)})
+            self.assertEqual(e.positions, [position])
+            self.assertEqual(e.orientation, Orientation.HORIZONTAL)
+            self.assertEqual(e.valid_reason,
+                             ValidationReason.FIRST_PLAY_TOO_FEW_TILES)
 
     # Is Adjacent Tests
     def test_is_adjacent_none(self):
