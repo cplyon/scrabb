@@ -21,7 +21,17 @@ class GameTest(unittest.TestCase):
         pass
 
     # Validation Tests
-    def test_is_valid_orientation_true(self):
+
+    def test_is_valid_invalid_orientation(self):
+        game = Game()
+        is_valid = game.is_valid_play(
+            [Board.MIDDLE,
+                (Board.MIDDLE[0], Board.MIDDLE[1] + 1),
+                (Board.MIDDLE[0]+1, Board.MIDDLE[1] + 1)],
+            Orientation.NONE)
+        self.assertEqual(is_valid, ValidationReason.INVALID_ORIENTATION)
+
+    def test_is_valid_true(self):
         game = Game()
         is_valid = game.is_valid_play(
             [Board.MIDDLE,
@@ -30,7 +40,7 @@ class GameTest(unittest.TestCase):
             Orientation.HORIZONTAL)
         self.assertEqual(is_valid, ValidationReason.VALID)
 
-    def test_is_valid_orientation_false(self):
+    def test_is_valid_first_play_not_on_middle(self):
         game = Game()
         is_valid = game.is_valid_play(
             [(Board.MIDDLE[0], Board.MIDDLE[1] + 1),
