@@ -4,24 +4,23 @@
 # Author: Chris Lyon
 # Contact: chris@cplyon.ca
 
-import logging
-import sys
 import unittest
 
 from scrabb.board import Board
 from scrabb.letter import Letter
 from scrabb.scrabb import Game
+from scrabb.scrabb import InvalidPlayException
 from scrabb.scrabb import Orientation
 from scrabb.scrabb import AdjacentDirection
 from scrabb.scrabb import ValidationReason
 
 
 class GameTest(unittest.TestCase):
+
     def setUp(self):
         pass
 
     # Validation Tests
-
     def test_is_valid_invalid_orientation(self):
         game = Game()
         is_valid = game.is_valid_play(
@@ -31,13 +30,22 @@ class GameTest(unittest.TestCase):
             Orientation.NONE)
         self.assertEqual(is_valid, ValidationReason.INVALID_ORIENTATION)
 
-    def test_is_valid_true(self):
+    def test_is_valid_horizontal_true(self):
         game = Game()
         is_valid = game.is_valid_play(
             [Board.MIDDLE,
                 (Board.MIDDLE[0], Board.MIDDLE[1] + 1),
                 (Board.MIDDLE[0], Board.MIDDLE[1] + 2)],
             Orientation.HORIZONTAL)
+        self.assertEqual(is_valid, ValidationReason.VALID)
+
+    def test_is_valid_vertical_true(self):
+        game = Game()
+        is_valid = game.is_valid_play(
+            [Board.MIDDLE,
+                (Board.MIDDLE[0] + 1, Board.MIDDLE[1]),
+                (Board.MIDDLE[0] + 2, Board.MIDDLE[1])],
+            Orientation.VERTICAL)
         self.assertEqual(is_valid, ValidationReason.VALID)
 
     def test_is_valid_first_play_not_on_middle(self):
@@ -137,6 +145,13 @@ class GameTest(unittest.TestCase):
                                             (Board.MIDDLE[0]+1,
                                              Board.MIDDLE[1]+1)])
         self.assertEqual(orientation, Orientation.NONE)
+
+    # Play Letters Tests
+    def test_play_letters_invalid(self):
+        game = Game()
+        with self.assertRaises(InvalidPlayException):
+            game.play_letters(
+                {(Board.MIDDLE[0], Board.MIDDLE[1]+4): Letter('A', 1)})
 
     # Is Adjacent Tests
     def test_is_adjacent_none(self):
@@ -241,8 +256,3 @@ Commented out until scorng implemented
             })
         self.assertEqual(score, 58)
 """
-
-if __name__ == "__main__":
-    logging.basicConfig(stream=sys.stderr)
-    logging.getLogger().setLevel(logging.DEBUG)
-    unittest.main()

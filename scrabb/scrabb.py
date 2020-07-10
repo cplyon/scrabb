@@ -33,6 +33,14 @@ class AdjacentDirection(Flag):
     RIGHT = auto()
 
 
+class InvalidPlayException(Exception):
+    def __init__(self, positions, orientation, valid_reason):
+        self.positions = positions
+        self.orientation = orientation
+        self.valid_reason = valid_reason
+        self.message = "{} {} {}".format(positions, orientation, valid_reason)
+
+
 class Game:
 
     def __init__(self):
@@ -48,9 +56,9 @@ class Game:
         orientation = self.get_orientation(positions)
 
         # reject play if not valid
-        if self.is_valid_play(positions, orientation) != \
-                ValidationReason.VALID:
-            return -1
+        valid_reason = self.is_valid_play(positions, orientation)
+        if valid_reason != ValidationReason.VALID:
+            raise InvalidPlayException(positions, orientation, valid_reason)
 
         # find all words
         words = self.find_words(orientation, letter_positions)
@@ -136,8 +144,6 @@ class Game:
         return adjacent_direction
 
     def is_valid_play(self, positions, orientation):
-        # TODO: check for plays too long to fit on board
-
         # check orientation is either Horizonal or Vertical
         if orientation == Orientation.NONE:
             return ValidationReason.INVALID_ORIENTATION
