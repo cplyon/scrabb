@@ -21,7 +21,7 @@ class GameTest(unittest.TestCase):
         pass
 
     # Validation Tests
-    def test_validate_middle_true(self):
+    def test_is_middle_true(self):
         game = Game()
         is_valid = game.is_valid_play(
             [Board.MIDDLE,
@@ -30,7 +30,7 @@ class GameTest(unittest.TestCase):
             Orientation.HORIZONTAL)
         self.assertEqual(is_valid, ValidationReason.VALID)
 
-    def test_validate_middle_false(self):
+    def test_is_middle_false(self):
         game = Game()
         is_valid = game.is_valid_play(
             [(Board.MIDDLE[0], Board.MIDDLE[1] + 1),
@@ -39,14 +39,14 @@ class GameTest(unittest.TestCase):
         self.assertEqual(is_valid,
                          ValidationReason.FIRST_PLAY_NOT_ON_MIDDLE_CELL)
 
-    def test_validate_first_play_too_short(self):
+    def test_is_first_play_too_short(self):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         is_valid = game.is_valid_play([Board.MIDDLE], Orientation.HORIZONTAL)
         self.assertEqual(is_valid,
                          ValidationReason.FIRST_PLAY_TOO_FEW_TILES)
 
-    def test_validate_cell_full(self):
+    def test_is_cell_full(self):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board.is_empty = False
@@ -54,7 +54,7 @@ class GameTest(unittest.TestCase):
         self.assertEqual(is_valid,
                          ValidationReason.CELL_ALREADY_FULL)
 
-    def test_validate_noncontiguous_horizontal(self):
+    def test_is_noncontiguous_horizontal(self):
         game = Game()
         is_valid = game.is_valid_play(
             [Board.MIDDLE,
@@ -62,9 +62,9 @@ class GameTest(unittest.TestCase):
                 (Board.MIDDLE[0], Board.MIDDLE[1] + 3)],
             Orientation.HORIZONTAL)
         self.assertEqual(is_valid,
-                         ValidationReason.NOT_ALL_CONNECTED)
+                         ValidationReason.NOT_CONTIGUOUS)
 
-    def test_validate_noncontiguous_vertical(self):
+    def test_is_noncontiguous_vertical(self):
         game = Game()
         is_valid = game.is_valid_play(
             [Board.MIDDLE,
@@ -72,9 +72,9 @@ class GameTest(unittest.TestCase):
                 (Board.MIDDLE[0]+3, Board.MIDDLE[1])],
             Orientation.VERTICAL)
         self.assertEqual(is_valid,
-                         ValidationReason.NOT_ALL_CONNECTED)
+                         ValidationReason.NOT_CONTIGUOUS)
 
-    def test_validate_prefix_suffix_horizontal(self):
+    def test_is_prefix_suffix_horizontal(self):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board.is_empty = False
@@ -83,7 +83,7 @@ class GameTest(unittest.TestCase):
                                       Orientation.HORIZONTAL)
         self.assertEqual(is_valid, ValidationReason.VALID)
 
-    def test_validate_prefix_suffix_vertical(self):
+    def test_is_prefix_suffix_vertical(self):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board.is_empty = False
@@ -120,59 +120,78 @@ class GameTest(unittest.TestCase):
         self.assertEqual(orientation, Orientation.NONE)
 
     # Is Touching Tests
-    def test_validate_not_touching(self):
+    def test_is_touching_none(self):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board.is_empty = False
         direction = game.is_touching((Board.MIDDLE[0], Board.MIDDLE[1]+4))
         self.assertEqual(direction, TouchingDirection.NONE)
 
-    def test_validate_touching_left(self):
+    def test_is_touching_left(self):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board.is_empty = False
         direction = game.is_touching((Board.MIDDLE[0], Board.MIDDLE[1]+1))
         self.assertEqual(direction, TouchingDirection.LEFT)
 
-    def test_validate_touching_right(self):
+    def test_is_touching_right(self):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board.is_empty = False
         direction = game.is_touching((Board.MIDDLE[0], Board.MIDDLE[1]-1))
         self.assertEqual(direction, TouchingDirection.RIGHT)
 
-    def test_validate_touching_above(self):
+    def test_is_touching_below(self):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board.is_empty = False
         direction = game.is_touching((Board.MIDDLE[0]-1, Board.MIDDLE[1]))
-        self.assertEqual(direction, TouchingDirection.ABOVE)
+        self.assertEqual(direction, TouchingDirection.BELOW)
 
-    def test_validate_touching_below(self):
+    def test_is_touching_above(self):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board.is_empty = False
         direction = game.is_touching((Board.MIDDLE[0]+1, Board.MIDDLE[1]))
-        self.assertEqual(direction, TouchingDirection.BELOW)
+        self.assertEqual(direction, TouchingDirection.ABOVE)
 
-    def test_validate_touching_below_left(self):
+    def test_is_touching_above_left(self):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
-        game.board[Board.MIDDLE[0]+1][Board.MIDDLE[1]] = Letter('A', 1)
-        game.board[Board.MIDDLE[0]][Board.MIDDLE[1]+1] = Letter('A', 1)
+        game.board[Board.MIDDLE[0]+1][Board.MIDDLE[1]] = Letter('B', 1)
+        game.board[Board.MIDDLE[0]][Board.MIDDLE[1]+1] = Letter('C', 1)
         game.board.is_empty = False
         direction = game.is_touching((Board.MIDDLE[0]+1, Board.MIDDLE[1]+1))
         self.assertEqual(direction,
-                         TouchingDirection.BELOW | TouchingDirection.LEFT)
+                         TouchingDirection.ABOVE | TouchingDirection.LEFT)
 
-    def test_validate_touching_below_right(self):
+    def test_is_touching_above_right(self):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
-        game.board[Board.MIDDLE[0]+1][Board.MIDDLE[1]+1] = Letter('A', 1)
-        game.board[Board.MIDDLE[0]][Board.MIDDLE[1]+1] = Letter('A', 1)
+        game.board[Board.MIDDLE[0]+1][Board.MIDDLE[1]+1] = Letter('B', 1)
+        game.board[Board.MIDDLE[0]][Board.MIDDLE[1]+1] = Letter('C', 1)
         game.board.is_empty = False
-        print(game.board)
         direction = game.is_touching((Board.MIDDLE[0]+1, Board.MIDDLE[1]))
+        self.assertEqual(direction,
+                         TouchingDirection.ABOVE | TouchingDirection.RIGHT)
+
+    def test_is_touching_below_left(self):
+        game = Game()
+        game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
+        game.board[Board.MIDDLE[0]-1][Board.MIDDLE[1]] = Letter('B', 1)
+        game.board[Board.MIDDLE[0]][Board.MIDDLE[1]+1] = Letter('C', 1)
+        game.board.is_empty = False
+        direction = game.is_touching((Board.MIDDLE[0]-1, Board.MIDDLE[1]+1))
+        self.assertEqual(direction,
+                         TouchingDirection.BELOW | TouchingDirection.LEFT)
+
+    def test_is_touching_below_right(self):
+        game = Game()
+        game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
+        game.board[Board.MIDDLE[0]-1][Board.MIDDLE[1]+1] = Letter('B', 1)
+        game.board[Board.MIDDLE[0]][Board.MIDDLE[1]+1] = Letter('C', 1)
+        game.board.is_empty = False
+        direction = game.is_touching((Board.MIDDLE[0]-1, Board.MIDDLE[1]))
         self.assertEqual(direction,
                          TouchingDirection.BELOW | TouchingDirection.RIGHT)
 

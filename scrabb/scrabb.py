@@ -15,7 +15,7 @@ class ValidationReason(Enum):
     CELL_ALREADY_FULL = auto()
     INVALID_ORIENTATION = auto()
     NOT_TOUCHING_EXISTING = auto()
-    NOT_ALL_CONNECTED = auto()
+    NOT_CONTIGUOUS = auto()
     VALID = auto()
 
 
@@ -116,29 +116,28 @@ class Game:
         return orientation
 
     def is_touching(self, position):
+        # TODO: rename 'touching' to 'adjacent'
+        row = position[0]
+        col = position[1]
         touching_direction = TouchingDirection.NONE
 
         # check above, if not at top row
-        if position[0] > 0 and \
-                self.board[position[0]+1][position[1]] is not None:
+        if row > 0 and self.board[row-1][col] is not None:
             touching_direction |= TouchingDirection.ABOVE
         # check below, if not at bottom row
-        if position[0] < Board.SIZE-1 and \
-                self.board[position[0]-1][position[1]] is not None:
+        if row < Board.SIZE-1 and self.board[row+1][col] is not None:
             touching_direction |= TouchingDirection.BELOW
         # check left, if not at left column
-        if position[1] > 0 and \
-                self.board[position[0]][position[1]-1] is not None:
+        if col > 0 and self.board[row][col-1] is not None:
             touching_direction |= TouchingDirection.LEFT
         # check right, if not at right column
-        if position[1] < Board.SIZE-1 and \
-                self.board[position[0]][position[1]+1] is not None:
+        if col < Board.SIZE-1 and self.board[row][col+1] is not None:
             touching_direction |= TouchingDirection.RIGHT
 
         return touching_direction
 
     def is_valid_play(self, positions, orientation):
-        # check orientation
+        # check orientation is either Horizonal or Vertical
         if orientation == Orientation.NONE:
             return ValidationReason.INVALID_ORIENTATION
 
@@ -154,25 +153,25 @@ class Game:
             if any(self.board[p[0]][p[1]] is not None for p in positions):
                 return ValidationReason.CELL_ALREADY_FULL
 
-            # check that play touches existing letters
+            # check that play is adjacent to at least one letter
+            # previously on the board
             if all(self.is_touching(p) == TouchingDirection.NONE
                    for p in positions):
                 return ValidationReason.NOT_TOUCHING_EXISTING
 
-        # check that all played letters are connected to each other
-        # or to previously played letters
+        # check that all played letters are contiguous
         if orientation == Orientation.HORIZONTAL:
             row = positions[0][0]
             for i in range(min(positions, key=lambda x: x[1])[1],
                            max(positions, key=lambda x: x[1])[1]+1):
                 if (row, i) not in positions and self.board[row][i] is None:
-                    return ValidationReason.NOT_ALL_CONNECTED
+                    return ValidationReason.NOT_CONTIGUOUS
         elif orientation == Orientation.VERTICAL:
             col = positions[0][1]
             for i in range(min(positions, key=lambda x: x[0])[0],
                            max(positions, key=lambda x: x[0])[0]+1):
                 if (i, col) not in positions and self.board[i][col] is None:
-                    return ValidationReason.NOT_ALL_CONNECTED
+                    return ValidationReason.NOT_CONTIGUOUS
 
         # this is a valid play!
         return ValidationReason.VALID
