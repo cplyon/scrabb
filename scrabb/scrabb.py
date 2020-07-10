@@ -109,47 +109,41 @@ class Game:
         orientation = Orientation.NONE
 
         if all(p[0] == row for p in positions):
-            print("Horizontal")
             orientation = Orientation.HORIZONTAL
         elif all(p[1] == col for p in positions):
-            print("Vertical")
             orientation = Orientation.VERTICAL
 
         return orientation
 
     def is_touching(self, position):
         touching_direction = TouchingDirection.NONE
+
         # check above, if not at top row
         if position[0] > 0 and \
                 self.board[position[0]+1][position[1]] is not None:
-            print("touching above")
             touching_direction |= TouchingDirection.ABOVE
         # check below, if not at bottom row
         if position[0] < Board.SIZE-1 and \
                 self.board[position[0]-1][position[1]] is not None:
-            print("touching below")
             touching_direction |= TouchingDirection.BELOW
         # check left, if not at left column
         if position[1] > 0 and \
                 self.board[position[0]][position[1]-1] is not None:
-            print("touching left")
             touching_direction |= TouchingDirection.LEFT
         # check right, if not at right column
         if position[1] < Board.SIZE-1 and \
                 self.board[position[0]][position[1]+1] is not None:
-            print("touching right")
             touching_direction |= TouchingDirection.RIGHT
 
         return touching_direction
 
     def is_valid_play(self, positions, orientation):
-
         # check orientation
         if orientation == Orientation.NONE:
             return ValidationReason.INVALID_ORIENTATION
 
-        # check that first play is on middle cell and is at least
-        # 2 letters
+        # check that first play is on middle cell and
+        # is at least 2 letters
         if self.board.is_empty:
             if Board.MIDDLE not in positions:
                 return ValidationReason.FIRST_PLAY_NOT_ON_MIDDLE_CELL
@@ -161,29 +155,26 @@ class Game:
                 return ValidationReason.CELL_ALREADY_FULL
 
             # check that play touches existing letters
-            for p in positions:
-                if self.is_touching(p) != TouchingDirection.NONE:
-                    break
-            else:
-                # not valid if none touching
+            if all(self.is_touching(p) == TouchingDirection.NONE
+                   for p in positions):
                 return ValidationReason.NOT_TOUCHING_EXISTING
 
         # check that all played letters are connected to each other
         # or to previously played letters
-        row = positions[0][0]
-        col = positions[0][1]
         if orientation == Orientation.HORIZONTAL:
+            row = positions[0][0]
             for i in range(min(positions, key=lambda x: x[1])[1],
                            max(positions, key=lambda x: x[1])[1]+1):
                 if (row, i) not in positions and self.board[row][i] is None:
                     return ValidationReason.NOT_ALL_CONNECTED
-
-        if orientation == Orientation.VERTICAL:
+        elif orientation == Orientation.VERTICAL:
+            col = positions[0][1]
             for i in range(min(positions, key=lambda x: x[0])[0],
                            max(positions, key=lambda x: x[0])[0]+1):
                 if (i, col) not in positions and self.board[i][col] is None:
                     return ValidationReason.NOT_ALL_CONNECTED
 
+        # this is a valid play!
         return ValidationReason.VALID
 
 
