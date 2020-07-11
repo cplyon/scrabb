@@ -234,9 +234,39 @@ class GameTest(unittest.TestCase):
         self.assertEqual(direction,
                          AdjacentDirection.BELOW | AdjacentDirection.RIGHT)
 
+    def test_is_adjacent_left_right(self):
+        game = Game()
+        game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
+        game.board[Board.MIDDLE[0]][Board.MIDDLE[1]+2] = Letter('B', 1)
+        game.board.is_empty = False
+        direction = game.is_adjacent((Board.MIDDLE[0], Board.MIDDLE[1]+1))
+        self.assertEqual(direction,
+                         AdjacentDirection.LEFT | AdjacentDirection.RIGHT)
+
+    def test_is_adjacent_above_below(self):
+        game = Game()
+        game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
+        game.board[Board.MIDDLE[0]+2][Board.MIDDLE[1]] = Letter('B', 1)
+        game.board.is_empty = False
+        direction = game.is_adjacent((Board.MIDDLE[0]+1, Board.MIDDLE[1]))
+        self.assertEqual(direction,
+                         AdjacentDirection.ABOVE | AdjacentDirection.BELOW)
+
+    def test_is_adjacent_above_below_left_right(self):
+        game = Game()
+        game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
+        game.board[Board.MIDDLE[0]+2][Board.MIDDLE[1]] = Letter('B', 1)
+        game.board[Board.MIDDLE[0]+1][Board.MIDDLE[1]+1] = Letter('A', 1)
+        game.board[Board.MIDDLE[0]+1][Board.MIDDLE[1]-1] = Letter('B', 1)
+        game.board.is_empty = False
+        direction = game.is_adjacent((Board.MIDDLE[0]+1, Board.MIDDLE[1]))
+        self.assertEqual(direction,
+                         AdjacentDirection.LEFT | AdjacentDirection.RIGHT |
+                         AdjacentDirection.ABOVE | AdjacentDirection.BELOW)
+
 
 """
-Commented out until scorng implemented
+Commented out until scoring implemented
     # Calculate Score Tests
     def test_calculate_score_simple(self):
         game = Game()
