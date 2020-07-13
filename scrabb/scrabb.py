@@ -66,35 +66,135 @@ class Game:
         # calculate score
         score = 0
         for word in words:
-            score += self.calculate_score(positions, letter_positions)
+            score += self.calculate_score(word)
 
         # place the letters on the board
         self.board.place_letters(letter_positions)
 
         return score
 
-    def find_words(self, orientation, letter_positions):
-        # sort positions
-        positions = list(letter_positions.keys())
-        if orientation == Orientation.HORIZONTAL:
-            sorted(positions, key=lambda x: x[0])
-        elif orientation == Orientation.VERTICAL:
-            sorted(positions, key=lambda x: x[1])
+    def get_contiguous_letters(self, cell, direction):
+        new_word = []
+        if direction == AdjacentDirection.LEFT:
+            row = cell[0]
+            col = cell[1] - 1
+            while self.board[row][col] is not None and col > 0:
+                new_word.insert(0, (row, col))
+                col -= 1
+        elif direction == AdjacentDirection.RIGHT:
+            row = cell[0]
+            col = cell[1] + 1
+            while self.board[row][col] is not None and col < Board.SIZE:
+                new_word.append((row, col))
+                col += 1
+        elif direction == AdjacentDirection.ABOVE:
+            row = cell[0] - 1
+            col = cell[1]
+            while self.board[row][col] is not None and row > 0:
+                new_word.insert(0, (row, col))
+                row -= 1
+        elif direction == AdjacentDirection.BELOW:
+            row = cell[0] + 1
+            col = cell[1]
+            while self.board[row][col] is not None and row < Board.SIZE:
+                new_word.append((row, col))
+                row += 1
+        return new_word
 
-        # find all words and store in a collection of tuples or dicts?
-        # if horizontal:
-        # first, calculate main word
-        # include the non-empty cells to the left of the first letter
-        # include the non-empty cells to the right of the last letter
-        # add this word to collection
-        # now find adjacent words
-        # for each letter played, if above cell is not empty:
-        # include all non-empty cells above the current letter
-        # include all non-empty cells below the current letter
-        # add this word to collection
-        # number of words is between 1 and (1 + len(positions))
-        # modify and repeat for vertical play
-        return None
+    def find_words(self, orientation, letter_positions):
+        words = set()
+        positions = list(letter_positions.keys())
+
+        if len(letter_positions) == 1:
+            # handle single-letter play by checking all adjacents
+            p = positions[0]
+            adjacency = self.is_adjacent(p)
+
+            # find horizontal word
+            new_word = [p]
+            if adjacency | AdjacentDirection.LEFT:
+                new_word.insert(0, self.get_contiguous_letters(positions[0],
+                                AdjacentDirection.LEFT))
+            if adjacency | AdjacentDirection.RIGHT:
+                new_word.insert(-1, self.get_contiguous_letters(positions[0],
+                                AdjacentDirection.LEFT))
+            # add any word we found
+            if len(new_word) > 1:
+                words.add(new_word)
+
+            # find vertical word
+            new_word = [p]
+            if adjacency | AdjacentDirection.ABOVE:
+                new_word.insert(0, self.get_contiguous_letters(positions[0],
+                                AdjacentDirection.ABOVE))
+            if adjacency | AdjacentDirection.BELOW:
+                new_word.insert(-1, self.get_contiguous_letters(positions[0],
+                                AdjacentDirection.BELOW))
+            # add any word we found
+            if len(new_word) > 1:
+                words.add(new_word)
+
+        elif orientation == Orientation.HORIZONTAL:
+            primary_word = positions.copy()
+            sorted(primary_word, key=lambda x: x[0])
+
+            # first, add the primary word, extending left and right as needed
+            first_adjacents = self.is_adjacent(primary_word[0])
+            if first_adjacents | AdjacentDirection.LEFT:
+                primary_word.insert(0, self.get_contiguous_letters(
+                    positions[0], AdjacentDirection.LEFT))
+
+            last_adjacents = self.is_adjacent(primary_word[-1])
+            if last_adjacents | AdjacentDirection.RIGHT:
+                primary_word.insert(-1, self.get_contiguous_letters(
+                    positions[-1], AdjacentDirection.RIGHT))
+            # add the word to our set of words
+            words.add(primary_word)
+
+            # next, look for perpendicular words for all letters
+            for p in positions:
+                adjacency = self.is_adjacent(p)
+                new_word = [p]
+                if adjacency | AdjacentDirection.ABOVE:
+                    new_word.insert(0, self.get_contiguous_letters(p,
+                                    AdjacentDirection.ABOVE))
+                if adjacency | AdjacentDirection.BELOW:
+                    new_word.insert(-1, self.get_contiguous_letters(p,
+                                    AdjacentDirection.BELOW))
+                # add the word to our set of words
+                words.add(new_word)
+
+        elif orientation == Orientation.VERTICAL:
+            primary_word = positions.copy()
+            sorted(primary_word, key=lambda x: x[1])
+
+            # first, add the primary word, extending above and below as needed
+            first_adjacents = self.is_adjacent(primary_word[0])
+            if first_adjacents | AdjacentDirection.ABOVE:
+                primary_word.insert(0, self.get_contiguous_letters(
+                    positions[0], AdjacentDirection.ABOVE))
+
+            last_adjacents = self.is_adjacent(primary_word[-1])
+            if last_adjacents | AdjacentDirection.BELOW:
+                primary_word.insert(-1, self.get_contiguous_letters(
+                    positions[-1], AdjacentDirection.BELOW))
+            # add the word to our set of words
+            words.add(primary_word)
+
+            # next, look for perpendicular words for all letters
+            for p in positions:
+                adjacency = self.is_adjacent(p)
+                new_word = [p]
+                if adjacency | AdjacentDirection.LEFT:
+                    new_word.insert(0, self.get_contiguous_letters(
+                        p, AdjacentDirection.LEFT))
+                if adjacency | AdjacentDirection.RIGHT:
+                    new_word.insert(-1, self.get_contiguous_letters(
+                        p, AdjacentDirection.RIGHT))
+                # add the word to our set of words
+                words.add(new_word)
+
+        return words
 
     def calculate_score(self, letter_positions):
         score = 0
