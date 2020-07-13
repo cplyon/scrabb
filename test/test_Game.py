@@ -259,8 +259,7 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]-2] = Letter('L', 1)
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]-3] = Letter('L', 1)
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]-5] = Letter('L', 1)
-        word = game.get_contiguous_letters(Board.MIDDLE,
-                                           AdjacentDirection.LEFT)
+        word = game.get_contiguous_cells(Board.MIDDLE, AdjacentDirection.LEFT)
         self.assertListEqual(word, [(Board.MIDDLE[0], Board.MIDDLE[1]-3),
                                     (Board.MIDDLE[0], Board.MIDDLE[1]-2),
                                     (Board.MIDDLE[0], Board.MIDDLE[1]-1)
@@ -272,8 +271,7 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]+2] = Letter('R', 1)
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]+3] = Letter('R', 1)
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]+5] = Letter('R', 1)
-        word = game.get_contiguous_letters(Board.MIDDLE,
-                                           AdjacentDirection.RIGHT)
+        word = game.get_contiguous_cells(Board.MIDDLE, AdjacentDirection.RIGHT)
         self.assertListEqual(word, [(Board.MIDDLE[0], Board.MIDDLE[1]+1),
                                     (Board.MIDDLE[0], Board.MIDDLE[1]+2),
                                     (Board.MIDDLE[0], Board.MIDDLE[1]+3)
@@ -285,8 +283,7 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]-2][Board.MIDDLE[1]] = Letter('A', 1)
         game.board[Board.MIDDLE[0]-3][Board.MIDDLE[1]] = Letter('A', 1)
         game.board[Board.MIDDLE[0]-5][Board.MIDDLE[1]] = Letter('A', 1)
-        word = game.get_contiguous_letters(Board.MIDDLE,
-                                           AdjacentDirection.ABOVE)
+        word = game.get_contiguous_cells(Board.MIDDLE, AdjacentDirection.ABOVE)
         self.assertListEqual(word, [(Board.MIDDLE[0]-3, Board.MIDDLE[1]),
                                     (Board.MIDDLE[0]-2, Board.MIDDLE[1]),
                                     (Board.MIDDLE[0]-1, Board.MIDDLE[1])
@@ -298,8 +295,7 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]+2][Board.MIDDLE[1]] = Letter('B', 1)
         game.board[Board.MIDDLE[0]+3][Board.MIDDLE[1]] = Letter('B', 1)
         game.board[Board.MIDDLE[0]+5][Board.MIDDLE[1]] = Letter('B', 1)
-        word = game.get_contiguous_letters(Board.MIDDLE,
-                                           AdjacentDirection.BELOW)
+        word = game.get_contiguous_cells(Board.MIDDLE, AdjacentDirection.BELOW)
         self.assertListEqual(word, [(Board.MIDDLE[0]+1, Board.MIDDLE[1]),
                                     (Board.MIDDLE[0]+2, Board.MIDDLE[1]),
                                     (Board.MIDDLE[0]+3, Board.MIDDLE[1])
@@ -307,8 +303,7 @@ class GameTest(unittest.TestCase):
 
     def test_get_contiguous_none(self):
         game = Game()
-        word = game.get_contiguous_letters(Board.MIDDLE,
-                                           AdjacentDirection.LEFT)
+        word = game.get_contiguous_cells(Board.MIDDLE, AdjacentDirection.LEFT)
         self.assertListEqual(word, [])
 
 

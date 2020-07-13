@@ -73,8 +73,9 @@ class Game:
 
         return score
 
-    def get_contiguous_letters(self, cell, direction):
+    def get_contiguous_cells(self, cell, direction):
         new_word = []
+        # return a list of cells that contain letters in direction from cell
         if direction == AdjacentDirection.LEFT:
             row = cell[0]
             col = cell[1] - 1
@@ -113,10 +114,10 @@ class Game:
             # find horizontal word
             new_word = [p]
             if adjacency | AdjacentDirection.LEFT:
-                new_word.insert(0, self.get_contiguous_letters(positions[0],
+                new_word.insert(0, self.get_contiguous_cells(positions[0],
                                 AdjacentDirection.LEFT))
             if adjacency | AdjacentDirection.RIGHT:
-                new_word.insert(-1, self.get_contiguous_letters(positions[0],
+                new_word.insert(-1, self.get_contiguous_cells(positions[0],
                                 AdjacentDirection.LEFT))
             # add any word we found
             if len(new_word) > 1:
@@ -125,10 +126,10 @@ class Game:
             # find vertical word
             new_word = [p]
             if adjacency | AdjacentDirection.ABOVE:
-                new_word.insert(0, self.get_contiguous_letters(positions[0],
+                new_word.insert(0, self.get_contiguous_cells(positions[0],
                                 AdjacentDirection.ABOVE))
             if adjacency | AdjacentDirection.BELOW:
-                new_word.insert(-1, self.get_contiguous_letters(positions[0],
+                new_word.insert(-1, self.get_contiguous_cells(positions[0],
                                 AdjacentDirection.BELOW))
             # add any word we found
             if len(new_word) > 1:
@@ -141,12 +142,12 @@ class Game:
             # first, add the primary word, extending left and right as needed
             first_adjacents = self.is_adjacent(primary_word[0])
             if first_adjacents | AdjacentDirection.LEFT:
-                primary_word.insert(0, self.get_contiguous_letters(
+                primary_word.insert(0, self.get_contiguous_cells(
                     positions[0], AdjacentDirection.LEFT))
 
             last_adjacents = self.is_adjacent(primary_word[-1])
             if last_adjacents | AdjacentDirection.RIGHT:
-                primary_word.insert(-1, self.get_contiguous_letters(
+                primary_word.insert(-1, self.get_contiguous_cells(
                     positions[-1], AdjacentDirection.RIGHT))
             # add the word to our set of words
             words.add(primary_word)
@@ -156,10 +157,10 @@ class Game:
                 adjacency = self.is_adjacent(p)
                 new_word = [p]
                 if adjacency | AdjacentDirection.ABOVE:
-                    new_word.insert(0, self.get_contiguous_letters(p,
+                    new_word.insert(0, self.get_contiguous_cells(p,
                                     AdjacentDirection.ABOVE))
                 if adjacency | AdjacentDirection.BELOW:
-                    new_word.insert(-1, self.get_contiguous_letters(p,
+                    new_word.insert(-1, self.get_contiguous_cells(p,
                                     AdjacentDirection.BELOW))
                 # add the word to our set of words
                 words.add(new_word)
@@ -171,12 +172,12 @@ class Game:
             # first, add the primary word, extending above and below as needed
             first_adjacents = self.is_adjacent(primary_word[0])
             if first_adjacents | AdjacentDirection.ABOVE:
-                primary_word.insert(0, self.get_contiguous_letters(
+                primary_word.insert(0, self.get_contiguous_cells(
                     positions[0], AdjacentDirection.ABOVE))
 
             last_adjacents = self.is_adjacent(primary_word[-1])
             if last_adjacents | AdjacentDirection.BELOW:
-                primary_word.insert(-1, self.get_contiguous_letters(
+                primary_word.insert(-1, self.get_contiguous_cells(
                     positions[-1], AdjacentDirection.BELOW))
             # add the word to our set of words
             words.add(primary_word)
@@ -186,10 +187,10 @@ class Game:
                 adjacency = self.is_adjacent(p)
                 new_word = [p]
                 if adjacency | AdjacentDirection.LEFT:
-                    new_word.insert(0, self.get_contiguous_letters(
+                    new_word.insert(0, self.get_contiguous_cells(
                         p, AdjacentDirection.LEFT))
                 if adjacency | AdjacentDirection.RIGHT:
-                    new_word.insert(-1, self.get_contiguous_letters(
+                    new_word.insert(-1, self.get_contiguous_cells(
                         p, AdjacentDirection.RIGHT))
                 # add the word to our set of words
                 words.add(new_word)
