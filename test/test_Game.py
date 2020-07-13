@@ -162,35 +162,30 @@ class GameTest(unittest.TestCase):
     def test_is_adjacent_none(self):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
-        game.board.is_empty = False
         direction = game.is_adjacent((Board.MIDDLE[0], Board.MIDDLE[1]+4))
         self.assertEqual(direction, AdjacentDirection.NONE)
 
     def test_is_adjacent_left(self):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
-        game.board.is_empty = False
         direction = game.is_adjacent((Board.MIDDLE[0], Board.MIDDLE[1]+1))
         self.assertEqual(direction, AdjacentDirection.LEFT)
 
     def test_is_adjacent_right(self):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
-        game.board.is_empty = False
         direction = game.is_adjacent((Board.MIDDLE[0], Board.MIDDLE[1]-1))
         self.assertEqual(direction, AdjacentDirection.RIGHT)
 
     def test_is_adjacent_below(self):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
-        game.board.is_empty = False
         direction = game.is_adjacent((Board.MIDDLE[0]-1, Board.MIDDLE[1]))
         self.assertEqual(direction, AdjacentDirection.BELOW)
 
     def test_is_adjacent_above(self):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
-        game.board.is_empty = False
         direction = game.is_adjacent((Board.MIDDLE[0]+1, Board.MIDDLE[1]))
         self.assertEqual(direction, AdjacentDirection.ABOVE)
 
@@ -199,7 +194,6 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board[Board.MIDDLE[0]+1][Board.MIDDLE[1]] = Letter('B', 1)
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]+1] = Letter('C', 1)
-        game.board.is_empty = False
         direction = game.is_adjacent((Board.MIDDLE[0]+1, Board.MIDDLE[1]+1))
         self.assertEqual(direction,
                          AdjacentDirection.ABOVE | AdjacentDirection.LEFT)
@@ -209,7 +203,6 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board[Board.MIDDLE[0]+1][Board.MIDDLE[1]+1] = Letter('B', 1)
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]+1] = Letter('C', 1)
-        game.board.is_empty = False
         direction = game.is_adjacent((Board.MIDDLE[0]+1, Board.MIDDLE[1]))
         self.assertEqual(direction,
                          AdjacentDirection.ABOVE | AdjacentDirection.RIGHT)
@@ -219,7 +212,6 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board[Board.MIDDLE[0]-1][Board.MIDDLE[1]] = Letter('B', 1)
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]+1] = Letter('C', 1)
-        game.board.is_empty = False
         direction = game.is_adjacent((Board.MIDDLE[0]-1, Board.MIDDLE[1]+1))
         self.assertEqual(direction,
                          AdjacentDirection.BELOW | AdjacentDirection.LEFT)
@@ -229,7 +221,6 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board[Board.MIDDLE[0]-1][Board.MIDDLE[1]+1] = Letter('B', 1)
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]+1] = Letter('C', 1)
-        game.board.is_empty = False
         direction = game.is_adjacent((Board.MIDDLE[0]-1, Board.MIDDLE[1]))
         self.assertEqual(direction,
                          AdjacentDirection.BELOW | AdjacentDirection.RIGHT)
@@ -238,7 +229,6 @@ class GameTest(unittest.TestCase):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]+2] = Letter('B', 1)
-        game.board.is_empty = False
         direction = game.is_adjacent((Board.MIDDLE[0], Board.MIDDLE[1]+1))
         self.assertEqual(direction,
                          AdjacentDirection.LEFT | AdjacentDirection.RIGHT)
@@ -247,7 +237,6 @@ class GameTest(unittest.TestCase):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board[Board.MIDDLE[0]+2][Board.MIDDLE[1]] = Letter('B', 1)
-        game.board.is_empty = False
         direction = game.is_adjacent((Board.MIDDLE[0]+1, Board.MIDDLE[1]))
         self.assertEqual(direction,
                          AdjacentDirection.ABOVE | AdjacentDirection.BELOW)
@@ -258,7 +247,6 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]+2][Board.MIDDLE[1]] = Letter('B', 1)
         game.board[Board.MIDDLE[0]+1][Board.MIDDLE[1]+1] = Letter('A', 1)
         game.board[Board.MIDDLE[0]+1][Board.MIDDLE[1]-1] = Letter('B', 1)
-        game.board.is_empty = False
         direction = game.is_adjacent((Board.MIDDLE[0]+1, Board.MIDDLE[1]))
         self.assertEqual(direction,
                          AdjacentDirection.LEFT | AdjacentDirection.RIGHT |
