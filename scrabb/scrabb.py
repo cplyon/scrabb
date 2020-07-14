@@ -50,7 +50,7 @@ class Game:
     def play_letters(self, letter_positions):
 
         # get just the letter positions
-        positions = list(letter_positions.keys())
+        positions = [(p[0], p[1]) for p in letter_positions]
 
         # determine orientation
         orientation = self.get_orientation(positions)
@@ -103,8 +103,8 @@ class Game:
         return new_word
 
     def find_words(self, orientation, letter_positions):
-        words = set()
-        positions = list(letter_positions.keys())
+        words = []
+        positions = [(p[0], p[1]) for p in letter_positions]
 
         if len(letter_positions) == 1:
             # handle single-letter play by checking all adjacents
@@ -114,26 +114,34 @@ class Game:
             # find horizontal word
             new_word = [p]
             if adjacency | AdjacentDirection.LEFT:
-                new_word.insert(0, self.get_contiguous_cells(positions[0],
-                                AdjacentDirection.LEFT))
+                cells = self.get_contiguous_cells(positions[0],
+                                                  AdjacentDirection.LEFT)
+                if len(cells) > 0:
+                    new_word.insert(0, cells)
             if adjacency | AdjacentDirection.RIGHT:
-                new_word.insert(-1, self.get_contiguous_cells(positions[0],
-                                AdjacentDirection.LEFT))
+                cells = self.get_contiguous_cells(positions[0],
+                                                  AdjacentDirection.RIGHT)
+                if len(cells) > 0:
+                    new_word.insert(-1, cells)
             # add any word we found
             if len(new_word) > 1:
-                words.add(new_word)
+                words.append(new_word)
 
             # find vertical word
             new_word = [p]
             if adjacency | AdjacentDirection.ABOVE:
-                new_word.insert(0, self.get_contiguous_cells(positions[0],
-                                AdjacentDirection.ABOVE))
+                cells = self.get_contiguous_cells(positions[0],
+                                                  AdjacentDirection.ABOVE)
+                if len(cells) > 0:
+                    new_word.insert(0, cells)
             if adjacency | AdjacentDirection.BELOW:
-                new_word.insert(-1, self.get_contiguous_cells(positions[0],
-                                AdjacentDirection.BELOW))
+                cells = self.get_contiguous_cells(positions[0],
+                                                  AdjacentDirection.BELOW)
+                if len(cells) > 0:
+                    new_word.insert(-1, cells)
             # add any word we found
             if len(new_word) > 1:
-                words.add(new_word)
+                words.append(new_word)
 
         elif orientation == Orientation.HORIZONTAL:
             primary_word = positions.copy()
@@ -150,7 +158,8 @@ class Game:
                 primary_word.insert(-1, self.get_contiguous_cells(
                     positions[-1], AdjacentDirection.RIGHT))
             # add the word to our set of words
-            words.add(primary_word)
+            if len(primary_word) > 0:
+                words.append(primary_word)
 
             # next, look for perpendicular words for all letters
             for p in positions:
@@ -163,7 +172,8 @@ class Game:
                     new_word.insert(-1, self.get_contiguous_cells(p,
                                     AdjacentDirection.BELOW))
                 # add the word to our set of words
-                words.add(new_word)
+                if len(new_word) > 0:
+                    words.append(primary_word)
 
         elif orientation == Orientation.VERTICAL:
             primary_word = positions.copy()
@@ -180,7 +190,8 @@ class Game:
                 primary_word.insert(-1, self.get_contiguous_cells(
                     positions[-1], AdjacentDirection.BELOW))
             # add the word to our set of words
-            words.add(primary_word)
+            if len(primary_word) > 0:
+                words.append(primary_word)
 
             # next, look for perpendicular words for all letters
             for p in positions:
@@ -193,7 +204,8 @@ class Game:
                     new_word.insert(-1, self.get_contiguous_cells(
                         p, AdjacentDirection.RIGHT))
                 # add the word to our set of words
-                words.add(new_word)
+                if len(new_word) > 0:
+                    words.append(primary_word)
 
         return words
 
@@ -203,7 +215,7 @@ class Game:
         # calculate letter scores
         for p in letter_positions:
             # TODO: calculate cell bonuses
-            score += letter_positions[p].score
+            score += p[2].score
 
         # bingo bonus
         if len(letter_positions) == 7:

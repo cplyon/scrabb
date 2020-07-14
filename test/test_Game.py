@@ -306,6 +306,14 @@ class GameTest(unittest.TestCase):
         word = game.get_contiguous_cells(Board.MIDDLE, AdjacentDirection.LEFT)
         self.assertListEqual(word, [])
 
+    # Find Words tests
+    def test_find_words_none(self):
+        game = Game()
+        words = game.find_words(Orientation.HORIZONTAL,
+                                [(Board.MIDDLE[0], Board.MIDDLE[1],
+                                 Letter('A', 1))])
+        self.assertEqual(words, [])
+
 
 """
 Commented out until scoring implemented
