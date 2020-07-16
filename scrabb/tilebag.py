@@ -4,71 +4,71 @@
 # Author: Chris Lyon
 # Contact: chris@cplyon.ca
 
-from .letter import Letter
+from .tile import Tile
 from collections_extended import bag
 
 
-class NotEnoughLettersException(Exception):
+class NotEnoughTilesException(Exception):
     pass
 
 
-class LetterBag:
+class TileBag:
 
     def __init__(self):
-        self._letters = bag()
+        self._tiles = bag()
 
     def __len__(self):
-        return len(self._letters)
+        return len(self._tiles)
 
-    def populate_letters(self):
-        self._letters.clear()
-        self._letters.add(Letter('J', 8))
-        self._letters.add(Letter('K', 5))
-        self._letters.add(Letter('Q', 10))
-        self._letters.add(Letter('X', 8))
-        self._letters.add(Letter('Z', 10))
+    def populate_tiles(self):
+        self._tiles.clear()
+        self._tiles.add(Tile('J', 8))
+        self._tiles.add(Tile('K', 5))
+        self._tiles.add(Tile('Q', 10))
+        self._tiles.add(Tile('X', 8))
+        self._tiles.add(Tile('Z', 10))
         for _ in range(2):
-            self._letters.add(Letter('B', 3))
-            self._letters.add(Letter('C', 3))
-            self._letters.add(Letter('F', 4))
-            self._letters.add(Letter('H', 4))
-            self._letters.add(Letter('M', 3))
-            self._letters.add(Letter('P', 3))
-            self._letters.add(Letter('V', 4))
-            self._letters.add(Letter('W', 4))
-            self._letters.add(Letter('Y', 4))
-            self._letters.add(Letter(' ', 0))
+            self._tiles.add(Tile('B', 3))
+            self._tiles.add(Tile('C', 3))
+            self._tiles.add(Tile('F', 4))
+            self._tiles.add(Tile('H', 4))
+            self._tiles.add(Tile('M', 3))
+            self._tiles.add(Tile('P', 3))
+            self._tiles.add(Tile('V', 4))
+            self._tiles.add(Tile('W', 4))
+            self._tiles.add(Tile('Y', 4))
+            self._tiles.add(Tile(' ', 0))
         for _ in range(3):
-            self._letters.add(Letter('G', 2))
+            self._tiles.add(Tile('G', 2))
         for _ in range(4):
-            self._letters.add(Letter('D', 2))
-            self._letters.add(Letter('L', 1))
-            self._letters.add(Letter('S', 1))
-            self._letters.add(Letter('U', 1))
+            self._tiles.add(Tile('D', 2))
+            self._tiles.add(Tile('L', 1))
+            self._tiles.add(Tile('S', 1))
+            self._tiles.add(Tile('U', 1))
         for _ in range(6):
-            self._letters.add(Letter('N', 1))
-            self._letters.add(Letter('R', 1))
-            self._letters.add(Letter('T', 1))
+            self._tiles.add(Tile('N', 1))
+            self._tiles.add(Tile('R', 1))
+            self._tiles.add(Tile('T', 1))
         for _ in range(8):
-            self._letters.add(Letter('O', 1))
+            self._tiles.add(Tile('O', 1))
         for _ in range(9):
-            self._letters.add(Letter('A', 1))
-            self._letters.add(Letter('I', 1))
+            self._tiles.add(Tile('A', 1))
+            self._tiles.add(Tile('I', 1))
         for _ in range(12):
-            self._letters.add(Letter('E', 1))
+            self._tiles.add(Tile('E', 1))
 
-    def draw_letters(self, num_letters):
+    def draw_tiles(self, num_tiles):
         # TODO: randomize draw
-        drawn_letters = []
-        for _ in range(max(num_letters, len(self._letters))):
-            drawn_letters.append(self._letters.pop())
-        return drawn_letters
+        drawn_tiles = []
+        for _ in range(max(num_tiles, len(self._tiles))):
+            drawn_tiles.append(self._tiles.pop())
+        return drawn_tiles
 
-    def exchange_letters(self, letters):
-        if len(letters) > len(self._letters):
-            raise NotEnoughLettersException()
+    def exchange_tiles(self, tiles):
+        if len(tiles) > len(self._tiles):
+            raise NotEnoughTilesException()
 
-        drawn_letters = self.draw_letters(len(letters))
-        for x in letters:
-            self._letters.add(x)
-        return drawn_letters
+        drawn_tiles = self.draw_tiles(len(tiles))
+        for x in tiles:
+            self._tiles.add(x)
+        return drawn_tiles

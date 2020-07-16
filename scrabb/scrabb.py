@@ -5,7 +5,7 @@
 # Contact: chris@cplyon.ca
 
 from .board import Board
-from .letterbag import LetterBag
+from .tilebag import TileBag
 from enum import Enum, Flag, auto
 
 
@@ -45,12 +45,12 @@ class Game:
 
     def __init__(self):
         self.board = Board()
-        self.letter_bag = LetterBag()
+        self.tile_bag = TileBag()
 
-    def play_letters(self, letter_positions):
+    def play_tiles(self, tile_positions):
 
-        # get just the letter positions
-        positions = [(p[0], p[1]) for p in letter_positions]
+        # get just the tile positions
+        positions = [(p[0], p[1]) for p in tile_positions]
 
         # determine orientation
         orientation = self.get_orientation(positions)
@@ -61,21 +61,21 @@ class Game:
             raise InvalidPlayException(positions, orientation, valid_reason)
 
         # find all words
-        words = self.find_words(orientation, letter_positions)
+        words = self.find_words(orientation, tile_positions)
 
         # calculate score
         score = 0
         for word in words:
             score += self.calculate_score(word)
 
-        # place the letters on the board
-        self.board.place_letters(letter_positions)
+        # place the tiles on the board
+        self.board.place_tiles(tile_positions)
 
         return score
 
     def get_contiguous_cells(self, cell, direction):
         new_word = []
-        # return a list of cells that contain letters in direction from cell
+        # return a list of cells that contain tiles in direction from cell
         if direction == AdjacentDirection.LEFT:
             row = cell[0]
             col = cell[1] - 1
@@ -102,9 +102,9 @@ class Game:
                 row += 1
         return new_word
 
-    def find_words(self, orientation, letter_positions):
+    def find_words(self, orientation, tile_positions):
         words = []
-        positions = [(p[0], p[1]) for p in letter_positions]
+        positions = [(p[0], p[1]) for p in tile_positions]
 
         if orientation == Orientation.HORIZONTAL:
             primary_word = sorted(positions, key=lambda x: x[1])
@@ -125,7 +125,7 @@ class Game:
             if len(primary_word) > 1:
                 words.append(primary_word)
 
-            # next, look for perpendicular words for all letters
+            # next, look for perpendicular words for all tiles
             for p in positions:
                 adjacency = self.is_adjacent(p)
                 new_word = [p]
@@ -160,7 +160,7 @@ class Game:
             if len(primary_word) > 1:
                 words.append(primary_word)
 
-            # next, look for perpendicular words for all letters
+            # next, look for perpendicular words for all tiles
             for p in positions:
                 adjacency = self.is_adjacent(p)
                 new_word = [p]
@@ -178,12 +178,12 @@ class Game:
 
         return words
 
-    def calculate_score(self, letter_positions):
+    def calculate_score(self, tile_positions):
         score = 0
         word_multiplier = 1
-        # calculate letter scores
+        # calculate tile scores
         current_score = 0
-        for p in letter_positions:
+        for p in tile_positions:
             # calculate cell bonuses
             if (p[0], p[1]) in self.board.double_word_cells:
                 word_multiplier *= 2
@@ -199,13 +199,13 @@ class Game:
         score = current_score * word_multiplier
 
         # bingo bonus
-        if len(letter_positions) == 7:
+        if len(tile_positions) == 7:
             score += 50
         return score
 
     def get_orientation(self, positions):
         # Determine word orientation, or NONE if we can't.
-        # Treat single letter plays as Horiztonal
+        # Treat single tile plays as Horiztonal
         row = positions[0][0]
         col = positions[0][1]
         orientation = Orientation.NONE
@@ -243,7 +243,7 @@ class Game:
             return ValidationReason.INVALID_ORIENTATION
 
         # check that first play is on middle cell and
-        # is at least 2 letters
+        # is at least 2 tiles
         if self.board.is_empty:
             if Board.MIDDLE not in positions:
                 return ValidationReason.FIRST_PLAY_NOT_ON_MIDDLE_CELL
@@ -254,13 +254,13 @@ class Game:
             if any(self.board[p[0]][p[1]] is not None for p in positions):
                 return ValidationReason.CELL_ALREADY_FULL
 
-            # check that play is adjacent to at least one letter
+            # check that play is adjacent to at least one tile
             # previously on the board
             if all(self.is_adjacent(p) == AdjacentDirection.NONE
                    for p in positions):
                 return ValidationReason.NOT_ADJACENT
 
-        # check that all played letters are contiguous
+        # check that all played tiles are contiguous
         if orientation == Orientation.HORIZONTAL:
             row = positions[0][0]
             for i in range(min(positions, key=lambda x: x[1])[1],

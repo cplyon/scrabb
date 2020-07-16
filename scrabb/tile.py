@@ -4,10 +4,10 @@
 # Author: Chris Lyon
 # Contact: chris@cplyon.ca
 
-class Letter:
-    def __init__(self, value, score):
-        self.value = value
+class Tile:
+    def __init__(self, letter, score):
+        self.letter = letter
         self.score = score
 
     def __str__(self):
-        print("{0},{1}".format(self.value, self.score))
+        print("{0},{1}".format(self.letter, self.score))
