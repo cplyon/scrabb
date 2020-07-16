@@ -321,14 +321,17 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]+3] = Letter('R', 1)
         game.board.is_empty = False
         words = game.find_words(Orientation.HORIZONTAL,
-                                [(Board.MIDDLE[0], Board.MIDDLE[0],
+                                [(Board.MIDDLE[0], Board.MIDDLE[1],
+                                 Letter('A', 1)),
+                                 (Board.MIDDLE[0], Board.MIDDLE[1]-1,
                                  Letter('A', 1))])
-        self.assertListEqual(words, [
-            (Board.MIDDLE[0], Board.MIDDLE[0]),
+        self.assertListEqual(words, [[
+            (Board.MIDDLE[0], Board.MIDDLE[1]-1),
+            (Board.MIDDLE[0], Board.MIDDLE[1]),
             (Board.MIDDLE[0], Board.MIDDLE[1]+1),
             (Board.MIDDLE[0], Board.MIDDLE[1]+2),
             (Board.MIDDLE[0], Board.MIDDLE[1]+3)
-        ])
+        ]])
 
     def test_find_words_extend_right(self):
         game = Game()
@@ -338,13 +341,16 @@ class GameTest(unittest.TestCase):
         game.board.is_empty = False
         words = game.find_words(Orientation.HORIZONTAL,
                                 [(Board.MIDDLE[0], Board.MIDDLE[0],
+                                 Letter('A', 1)),
+                                 (Board.MIDDLE[0], Board.MIDDLE[0]+1,
                                  Letter('A', 1))])
-        self.assertListEqual(words, [
+        self.assertListEqual(words, [[
             (Board.MIDDLE[0], Board.MIDDLE[1]-3),
             (Board.MIDDLE[0], Board.MIDDLE[1]-2),
             (Board.MIDDLE[0], Board.MIDDLE[1]-1),
-            (Board.MIDDLE[0], Board.MIDDLE[0])
-        ])
+            (Board.MIDDLE[0], Board.MIDDLE[1]),
+            (Board.MIDDLE[0], Board.MIDDLE[1]+1)
+        ]])
 
     def test_find_words_extend_above(self):
         game = Game()
@@ -353,14 +359,18 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]+3][Board.MIDDLE[1]] = Letter('B', 1)
         game.board.is_empty = False
         words = game.find_words(Orientation.VERTICAL,
-                                [(Board.MIDDLE[0], Board.MIDDLE[0],
-                                 Letter('A', 1))])
-        self.assertListEqual(words, [
-            (Board.MIDDLE[0], Board.MIDDLE[0]),
+                                [(Board.MIDDLE[0], Board.MIDDLE[1],
+                                 Letter('A', 1)),
+                                 (Board.MIDDLE[0]-1, Board.MIDDLE[1],
+                                 Letter('A', 1))
+                                 ])
+        self.assertListEqual(words, [[
+            (Board.MIDDLE[0]-1, Board.MIDDLE[1]),
+            (Board.MIDDLE[0], Board.MIDDLE[1]),
             (Board.MIDDLE[0]+1, Board.MIDDLE[1]),
             (Board.MIDDLE[0]+2, Board.MIDDLE[1]),
             (Board.MIDDLE[0]+3, Board.MIDDLE[1])
-        ])
+        ]])
 
     def test_find_words_extend_below(self):
         game = Game()
@@ -369,14 +379,58 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]-3][Board.MIDDLE[1]] = Letter('A', 1)
         game.board.is_empty = False
         words = game.find_words(Orientation.VERTICAL,
-                                [(Board.MIDDLE[0], Board.MIDDLE[0],
-                                 Letter('A', 1))])
-        self.assertListEqual(words, [
+                                [(Board.MIDDLE[0], Board.MIDDLE[1],
+                                 Letter('A', 1)),
+                                 (Board.MIDDLE[1]+1, Board.MIDDLE[1],
+                                 Letter('A', 1))
+                                 ])
+        self.assertListEqual(words, [[
             (Board.MIDDLE[0]-3, Board.MIDDLE[1]),
             (Board.MIDDLE[0]-2, Board.MIDDLE[1]),
             (Board.MIDDLE[0]-1, Board.MIDDLE[1]),
-            (Board.MIDDLE[0], Board.MIDDLE[0])
+            (Board.MIDDLE[0], Board.MIDDLE[1]),
+            (Board.MIDDLE[0]+1, Board.MIDDLE[1])
+        ]])
+
+    def test_find_words_horizontal_parallel(self):
+        game = Game()
+        game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('R', 1)
+        game.board[Board.MIDDLE[0]][Board.MIDDLE[1]+1] = Letter('R', 1)
+        game.board[Board.MIDDLE[0]][Board.MIDDLE[1]+2] = Letter('R', 1)
+        game.board.is_empty = False
+        words = game.find_words(Orientation.HORIZONTAL,
+                                [(Board.MIDDLE[0]+1, Board.MIDDLE[1],
+                                 Letter('A', 1)),
+                                 (Board.MIDDLE[0]+1, Board.MIDDLE[1]+1,
+                                 Letter('A', 1))])
+        self.assertListEqual(words, [
+            [(Board.MIDDLE[0]+1, Board.MIDDLE[1]),
+             (Board.MIDDLE[0]+1, Board.MIDDLE[1]+1)],
+            [(Board.MIDDLE[0], Board.MIDDLE[1]),
+             (Board.MIDDLE[0]+1, Board.MIDDLE[1])],
+            [(Board.MIDDLE[0], Board.MIDDLE[1]+1),
+             (Board.MIDDLE[0]+1, Board.MIDDLE[1]+1)]
         ])
+
+    def test_find_words_vertical_parallel(self):
+        game = Game()
+        game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('B', 1)
+        game.board[Board.MIDDLE[0]+1][Board.MIDDLE[1]] = Letter('B', 1)
+        game.board.is_empty = False
+        words = game.find_words(Orientation.VERTICAL,
+                                [(Board.MIDDLE[0], Board.MIDDLE[1]+1,
+                                 Letter('A', 1)),
+                                 (Board.MIDDLE[0]+1, Board.MIDDLE[1]+1,
+                                 Letter('A', 1))])
+        self.assertListEqual(words, [
+            [(Board.MIDDLE[0], Board.MIDDLE[1]+1),
+             (Board.MIDDLE[0]+1, Board.MIDDLE[1]+1)],
+            [(Board.MIDDLE[0], Board.MIDDLE[1]),
+             (Board.MIDDLE[0], Board.MIDDLE[1]+1)],
+            [(Board.MIDDLE[0]+1, Board.MIDDLE[1]),
+             (Board.MIDDLE[0]+1, Board.MIDDLE[1]+1)]
+        ])
+
 
 """
 Commented out until scoring implemented
