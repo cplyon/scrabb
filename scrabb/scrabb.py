@@ -180,11 +180,23 @@ class Game:
 
     def calculate_score(self, letter_positions):
         score = 0
-
+        word_multiplier = 1
         # calculate letter scores
+        current_score = 0
         for p in letter_positions:
-            # TODO: calculate cell bonuses
-            score += p[2].score
+            # calculate cell bonuses
+            if (p[0], p[1]) in self.board.double_word_cells:
+                word_multiplier *= 2
+            elif (p[0], p[1]) in self.board.triple_word_cells:
+                word_multiplier *= 3
+
+            if (p[0], p[1]) in self.board.double_letter_cells:
+                current_score += (p[2].score * 2)
+            elif (p[0], p[1]) in self.board.triple_letter_cells:
+                current_score += (p[2].score * 3)
+            else:
+                current_score += p[2].score
+        score = current_score * word_multiplier
 
         # bingo bonus
         if len(letter_positions) == 7:

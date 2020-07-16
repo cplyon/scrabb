@@ -431,30 +431,26 @@ class GameTest(unittest.TestCase):
              (Board.MIDDLE[0]+1, Board.MIDDLE[1]+1)]
         ])
 
-
-"""
-Commented out until scoring implemented
     # Calculate Score Tests
     def test_calculate_score_simple(self):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board.is_empty = False
         score = game.calculate_score(
-            {(Board.MIDDLE[0], Board.MIDDLE[1]+1): Letter('A', 1)})
-        self.assertEqual(score, 2)
+            [(Board.MIDDLE[0], Board.MIDDLE[1]+1, Letter('A', 1))])
+        self.assertEqual(score, 1)
 
     def test_calculate_score_bingo(self):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Letter('A', 1)
         game.board.is_empty = False
-        score = game.calculate_score({
-            (Board.MIDDLE[0], Board.MIDDLE[1]+1): Letter('A', 1),
-            (Board.MIDDLE[0], Board.MIDDLE[1]+2): Letter('A', 1),
-            (Board.MIDDLE[0], Board.MIDDLE[1]+3): Letter('A', 1),
-            (Board.MIDDLE[0], Board.MIDDLE[1]+4): Letter('A', 1),
-            (Board.MIDDLE[0], Board.MIDDLE[1]+5): Letter('A', 1),
-            (Board.MIDDLE[0], Board.MIDDLE[1]+6): Letter('A', 1),
-            (Board.MIDDLE[0], Board.MIDDLE[1]+7): Letter('A', 1)
-            })
+        score = game.calculate_score([
+            (Board.MIDDLE[0], Board.MIDDLE[1]+1, Letter('A', 1)),
+            (Board.MIDDLE[0], Board.MIDDLE[1]+2, Letter('A', 1)),
+            (Board.MIDDLE[0], Board.MIDDLE[1]+3, Letter('A', 1)),
+            (Board.MIDDLE[0], Board.MIDDLE[1]+4, Letter('A', 1)),
+            (Board.MIDDLE[0], Board.MIDDLE[1]+5, Letter('A', 1)),
+            (Board.MIDDLE[0], Board.MIDDLE[1]+6, Letter('A', 1)),
+            (Board.MIDDLE[0], Board.MIDDLE[1]+7, Letter('A', 1))
+        ])
         self.assertEqual(score, 58)
-"""

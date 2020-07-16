@@ -27,6 +27,12 @@ class Board:
             (3, 14), (11, 14)
         }
 
+        self.triple_letter_cells = {}
+        self.double_word_cells = {
+            (7, 7)
+        }
+        self.triple_word_cells = {}
+
         self.is_empty = True
 
     def __str__(self):
@@ -50,4 +56,7 @@ class Board:
         # place letters
         for p in letter_positions:
             self._board[p[0]][p[1]] = letter_positions[p]
+            # remove any square bonuses
+            if p in self.double_letter_cells:
+                self.double_letter_cells.discard((p[0], p[1]))
         self.is_empty = False
