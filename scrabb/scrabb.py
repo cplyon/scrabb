@@ -110,38 +110,33 @@ class Game:
             # handle single-letter play by checking all adjacents
             p = positions[0]
             adjacency = self.is_adjacent(p)
-
             # find horizontal word
             new_word = [p]
             if adjacency | AdjacentDirection.LEFT:
-                cells = self.get_contiguous_cells(positions[0],
-                                                  AdjacentDirection.LEFT)
+                cells = self.get_contiguous_cells(p, AdjacentDirection.LEFT)
                 if len(cells) > 0:
-                    new_word.insert(0, cells)
+                    new_word = cells + new_word
             if adjacency | AdjacentDirection.RIGHT:
-                cells = self.get_contiguous_cells(positions[0],
-                                                  AdjacentDirection.RIGHT)
+                cells = self.get_contiguous_cells(p, AdjacentDirection.RIGHT)
                 if len(cells) > 0:
-                    new_word.insert(-1, cells)
+                    new_word = new_word + cells
             # add any word we found
             if len(new_word) > 1:
-                words.append(new_word)
+                words = words + new_word
 
             # find vertical word
             new_word = [p]
             if adjacency | AdjacentDirection.ABOVE:
-                cells = self.get_contiguous_cells(positions[0],
-                                                  AdjacentDirection.ABOVE)
+                cells = self.get_contiguous_cells(p, AdjacentDirection.ABOVE)
                 if len(cells) > 0:
-                    new_word.insert(0, cells)
+                    new_word = cells + new_word
             if adjacency | AdjacentDirection.BELOW:
-                cells = self.get_contiguous_cells(positions[0],
-                                                  AdjacentDirection.BELOW)
+                cells = self.get_contiguous_cells(p, AdjacentDirection.BELOW)
                 if len(cells) > 0:
-                    new_word.insert(-1, cells)
+                    new_word = new_word + cells
             # add any word we found
             if len(new_word) > 1:
-                words.append(new_word)
+                words = words + new_word
 
         elif orientation == Orientation.HORIZONTAL:
             primary_word = positions.copy()
