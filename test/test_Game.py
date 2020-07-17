@@ -159,10 +159,6 @@ class GameTest(unittest.TestCase):
         with self.assertRaises(InvalidPlayException) as e:
             game.play_tiles(
                 [(position[0], position[1], self.A)])
-            self.assertEqual(e.positions, [position])
-            self.assertEqual(e.orientation, Orientation.HORIZONTAL)
-            self.assertEqual(e.valid_reason,
-                             ValidationReason.FIRST_PLAY_TOO_FEW_TILES)
 
     def test_play_files_valid(self):
         game = Game()
