@@ -435,15 +435,45 @@ class GameTest(unittest.TestCase):
     def test_calculate_score_simple(self):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Tile('A', 1)
-        game.board.is_empty = False
         score = game.calculate_score(
             [(Board.MIDDLE[0], Board.MIDDLE[1]+1, Tile('A', 1))])
         self.assertEqual(score, 1)
 
+    def test_calculate_score_double_word(self):
+        game = Game()
+        score = game.calculate_score([
+            (Board.MIDDLE[0], Board.MIDDLE[1], Tile('A', 1)),
+            (Board.MIDDLE[0], Board.MIDDLE[1]+1, Tile('A', 1)),
+        ])
+        self.assertEqual(score, 4)
+
+    def test_calculate_score_triple_word(self):
+        game = Game()
+        score = game.calculate_score([
+            (0, Board.MIDDLE[1], Tile('A', 1)),
+            (0, Board.MIDDLE[1]+1, Tile('A', 1)),
+        ])
+        self.assertEqual(score, 6)
+
+    def test_calculate_score_double_letter(self):
+        game = Game()
+        score = game.calculate_score([
+            (Board.MIDDLE[0]-1, Board.MIDDLE[1], Tile('A', 1)),
+            (Board.MIDDLE[0]-1, Board.MIDDLE[1]+1, Tile('A', 1)),
+        ])
+        self.assertEqual(score, 3)
+
+    def test_calculate_score_triple_letter(self):
+        game = Game()
+        score = game.calculate_score([
+            (Board.MIDDLE[0]-2, Board.MIDDLE[1]+1, Tile('A', 1)),
+            (Board.MIDDLE[0]-2, Board.MIDDLE[1]+2, Tile('A', 1)),
+        ])
+        self.assertEqual(score, 4)
+
     def test_calculate_score_bingo(self):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Tile('A', 1)
-        game.board.is_empty = False
         score = game.calculate_score([
             (Board.MIDDLE[0]+1, Board.MIDDLE[1], Tile('A', 1)),
             (Board.MIDDLE[0]+1, Board.MIDDLE[1]+1, Tile('A', 1)),
