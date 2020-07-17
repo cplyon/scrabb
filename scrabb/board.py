@@ -67,20 +67,14 @@ class Board:
     def __getitem__(self, key):
         return self._board[key]
 
-    def __setitem__(self, key, item):
-        self._board[key] = item
-
     def place_tiles(self, tile_positions):
         for t in tile_positions:
+            position = (t[0], t[1])
             # remove any square bonuses
-            if t in self.double_letter_cells:
-                self.double_letter_cells.discard((t[0], t[1]))
-            if t in self.triple_letter_cells:
-                self.triple_letter_cells.discard((t[0], t[1]))
-            if t in self.double_word_cells:
-                self.double_word_cells.discard((t[0], t[1]))
-            if t in self.triple_word_cells:
-                self.triple_word_cells.discard((t[0], t[1]))
+            self.double_letter_cells.discard(position)
+            self.triple_letter_cells.discard(position)
+            self.double_word_cells.discard(position)
+            self.triple_word_cells.discard(position)
             # place tile
             self._board[t[0]][t[1]] = t[2]
         self.is_empty = False

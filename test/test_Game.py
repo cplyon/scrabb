@@ -156,7 +156,7 @@ class GameTest(unittest.TestCase):
     def test_play_tiles_invalid(self):
         position = (Board.MIDDLE[0], Board.MIDDLE[1]+4)
         game = Game()
-        with self.assertRaises(InvalidPlayException) as e:
+        with self.assertRaises(InvalidPlayException):
             game.play_tiles(
                 [(position[0], position[1], self.A)])
 
@@ -270,9 +270,12 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]-3] = self.L
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]-5] = self.L
         word = game.get_contiguous_cells(Board.MIDDLE, AdjacentDirection.LEFT)
-        self.assertListEqual(word, [(Board.MIDDLE[0], Board.MIDDLE[1]-3, self.L),
-                                    (Board.MIDDLE[0], Board.MIDDLE[1]-2, self.L),
-                                    (Board.MIDDLE[0], Board.MIDDLE[1]-1, self.L)
+        self.assertListEqual(word, [(Board.MIDDLE[0], Board.MIDDLE[1]-3,
+                                     self.L),
+                                    (Board.MIDDLE[0], Board.MIDDLE[1]-2,
+                                     self.L),
+                                    (Board.MIDDLE[0], Board.MIDDLE[1]-1,
+                                     self.L)
                                     ])
 
     def test_get_contiguous_right(self):
@@ -282,9 +285,12 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]+3] = self.R
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]+5] = self.R
         word = game.get_contiguous_cells(Board.MIDDLE, AdjacentDirection.RIGHT)
-        self.assertListEqual(word, [(Board.MIDDLE[0], Board.MIDDLE[1]+1, self.R),
-                                    (Board.MIDDLE[0], Board.MIDDLE[1]+2, self.R),
-                                    (Board.MIDDLE[0], Board.MIDDLE[1]+3, self.R)
+        self.assertListEqual(word, [(Board.MIDDLE[0], Board.MIDDLE[1]+1,
+                                     self.R),
+                                    (Board.MIDDLE[0], Board.MIDDLE[1]+2,
+                                     self.R),
+                                    (Board.MIDDLE[0], Board.MIDDLE[1]+3,
+                                     self.R)
                                     ])
 
     def test_get_contiguous_above(self):
@@ -294,9 +300,12 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]-3][Board.MIDDLE[1]] = self.A
         game.board[Board.MIDDLE[0]-5][Board.MIDDLE[1]] = self.A
         word = game.get_contiguous_cells(Board.MIDDLE, AdjacentDirection.ABOVE)
-        self.assertListEqual(word, [(Board.MIDDLE[0]-3, Board.MIDDLE[1], self.A),
-                                    (Board.MIDDLE[0]-2, Board.MIDDLE[1], self.A),
-                                    (Board.MIDDLE[0]-1, Board.MIDDLE[1], self.A)
+        self.assertListEqual(word, [(Board.MIDDLE[0]-3, Board.MIDDLE[1],
+                                     self.A),
+                                    (Board.MIDDLE[0]-2, Board.MIDDLE[1],
+                                     self.A),
+                                    (Board.MIDDLE[0]-1, Board.MIDDLE[1],
+                                     self.A)
                                     ])
 
     def test_get_contiguous_below(self):
@@ -306,9 +315,12 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]+3][Board.MIDDLE[1]] = self.B
         game.board[Board.MIDDLE[0]+5][Board.MIDDLE[1]] = self.B
         word = game.get_contiguous_cells(Board.MIDDLE, AdjacentDirection.BELOW)
-        self.assertListEqual(word, [(Board.MIDDLE[0]+1, Board.MIDDLE[1], self.B),
-                                    (Board.MIDDLE[0]+2, Board.MIDDLE[1], self.B),
-                                    (Board.MIDDLE[0]+3, Board.MIDDLE[1], self.B)
+        self.assertListEqual(word, [(Board.MIDDLE[0]+1, Board.MIDDLE[1],
+                                     self.B),
+                                    (Board.MIDDLE[0]+2, Board.MIDDLE[1],
+                                     self.B),
+                                    (Board.MIDDLE[0]+3, Board.MIDDLE[1],
+                                     self.B)
                                     ])
 
     def test_get_contiguous_none(self):
