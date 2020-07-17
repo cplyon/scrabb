@@ -445,12 +445,12 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]] = Tile('A', 1)
         game.board.is_empty = False
         score = game.calculate_score([
-            (Board.MIDDLE[0], Board.MIDDLE[1]+1, Tile('A', 1)),
-            (Board.MIDDLE[0], Board.MIDDLE[1]+2, Tile('A', 1)),
-            (Board.MIDDLE[0], Board.MIDDLE[1]+3, Tile('A', 1)),
-            (Board.MIDDLE[0], Board.MIDDLE[1]+4, Tile('A', 1)),
-            (Board.MIDDLE[0], Board.MIDDLE[1]+5, Tile('A', 1)),
-            (Board.MIDDLE[0], Board.MIDDLE[1]+6, Tile('A', 1)),
-            (Board.MIDDLE[0], Board.MIDDLE[1]+7, Tile('A', 1))
+            (Board.MIDDLE[0]+1, Board.MIDDLE[1], Tile('A', 1)),
+            (Board.MIDDLE[0]+1, Board.MIDDLE[1]+1, Tile('A', 1)),
+            (Board.MIDDLE[0]+1, Board.MIDDLE[1]+2, Tile('A', 1)),
+            (Board.MIDDLE[0]+1, Board.MIDDLE[1]+3, Tile('A', 1)),
+            (Board.MIDDLE[0]+1, Board.MIDDLE[1]+4, Tile('A', 1)),
+            (Board.MIDDLE[0]+1, Board.MIDDLE[1]+5, Tile('A', 1)),
+            (Board.MIDDLE[0]+1, Board.MIDDLE[1]+6, Tile('A', 1))
         ])
-        self.assertEqual(score, 58)
+        self.assertEqual(score, 59)
