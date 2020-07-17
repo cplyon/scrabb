@@ -80,34 +80,33 @@ class Game:
             row = cell[0]
             col = cell[1] - 1
             while self.board[row][col] is not None and col > 0:
-                new_word.insert(0, (row, col))
+                new_word.insert(0, (row, col, self.board[row][col]))
                 col -= 1
         elif direction == AdjacentDirection.RIGHT:
             row = cell[0]
             col = cell[1] + 1
             while self.board[row][col] is not None and col < Board.SIZE:
-                new_word.append((row, col))
+                new_word.append((row, col, self.board[row][col]))
                 col += 1
         elif direction == AdjacentDirection.ABOVE:
             row = cell[0] - 1
             col = cell[1]
             while self.board[row][col] is not None and row > 0:
-                new_word.insert(0, (row, col))
+                new_word.insert(0, (row, col, self.board[row][col]))
                 row -= 1
         elif direction == AdjacentDirection.BELOW:
             row = cell[0] + 1
             col = cell[1]
             while self.board[row][col] is not None and row < Board.SIZE:
-                new_word.append((row, col))
+                new_word.append((row, col, self.board[row][col]))
                 row += 1
         return new_word
 
     def find_words(self, orientation, tile_positions):
         words = []
-        positions = [(p[0], p[1]) for p in tile_positions]
 
         if orientation == Orientation.HORIZONTAL:
-            primary_word = sorted(positions, key=lambda x: x[1])
+            primary_word = sorted(tile_positions, key=lambda x: x[1])
 
             # first, add the primary word, extending left and right as needed
             first_adjacents = self.is_adjacent(primary_word[0])
@@ -126,7 +125,7 @@ class Game:
                 words.append(primary_word)
 
             # next, look for perpendicular words for all tiles
-            for p in positions:
+            for p in tile_positions:
                 adjacency = self.is_adjacent(p)
                 new_word = [p]
                 if adjacency | AdjacentDirection.ABOVE:
@@ -142,7 +141,7 @@ class Game:
                     words.append(new_word)
 
         elif orientation == Orientation.VERTICAL:
-            primary_word = sorted(positions, key=lambda x: x[0])
+            primary_word = sorted(tile_positions, key=lambda x: x[0])
 
             # first, add the primary word, extending above and below as needed
             first_adjacents = self.is_adjacent(primary_word[0])
@@ -161,7 +160,7 @@ class Game:
                 words.append(primary_word)
 
             # next, look for perpendicular words for all tiles
-            for p in positions:
+            for p in tile_positions:
                 adjacency = self.is_adjacent(p)
                 new_word = [p]
                 if adjacency | AdjacentDirection.LEFT:

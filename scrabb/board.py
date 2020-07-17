@@ -70,11 +70,17 @@ class Board:
     def __setitem__(self, key, item):
         self._board[key] = item
 
-    def place_letters(self, letter_positions):
-        # place letters
-        for p in letter_positions:
-            self._board[p[0]][p[1]] = letter_positions[p]
+    def place_tiles(self, tile_positions):
+        for t in tile_positions:
             # remove any square bonuses
-            if p in self.double_letter_cells:
-                self.double_letter_cells.discard((p[0], p[1]))
+            if t in self.double_letter_cells:
+                self.double_letter_cells.discard((t[0], t[1]))
+            if t in self.triple_letter_cells:
+                self.triple_letter_cells.discard((t[0], t[1]))
+            if t in self.double_word_cells:
+                self.double_word_cells.discard((t[0], t[1]))
+            if t in self.triple_word_cells:
+                self.triple_word_cells.discard((t[0], t[1]))
+            # place tile
+            self._board[t[0]][t[1]] = t[2]
         self.is_empty = False
