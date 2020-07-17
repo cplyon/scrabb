@@ -102,78 +102,55 @@ class Game:
                 row += 1
         return new_word
 
+    def extend_word(self, orientation, tile_position):
+        adjacency = self.is_adjacent(tile_position)
+        cells_front = []
+        cells_end = []
+
+        if orientation == Orientation.HORIZONTAL:
+            if adjacency | AdjacentDirection.LEFT:
+                cells_front = self.get_contiguous_cells(
+                    tile_position,
+                    AdjacentDirection.LEFT)
+            if adjacency | AdjacentDirection.RIGHT:
+                cells_end = self.get_contiguous_cells(
+                    tile_position,
+                    AdjacentDirection.RIGHT)
+
+        elif orientation == Orientation.VERTICAL:
+            if adjacency | AdjacentDirection.ABOVE:
+                cells_front = self.get_contiguous_cells(
+                    tile_position,
+                    AdjacentDirection.ABOVE)
+            if adjacency | AdjacentDirection.BELOW:
+                cells_end = self.get_contiguous_cells(
+                    tile_position,
+                    AdjacentDirection.BELOW)
+
+        return cells_front + [tile_position] + cells_end
+
     def find_words(self, orientation, tile_positions):
         words = []
 
         if orientation == Orientation.HORIZONTAL:
             primary_word = sorted(tile_positions, key=lambda x: x[1])
-
-            # first, add the primary word, extending left and right as needed
-            first_adjacents = self.is_adjacent(primary_word[0])
-            if first_adjacents | AdjacentDirection.LEFT:
-                cells = self.get_contiguous_cells(primary_word[0],
-                                                  AdjacentDirection.LEFT)
-                primary_word = cells + primary_word
-
-            last_adjacents = self.is_adjacent(primary_word[-1])
-            if last_adjacents | AdjacentDirection.RIGHT:
-                cells = self.get_contiguous_cells(primary_word[-1],
-                                                  AdjacentDirection.RIGHT)
-                primary_word = primary_word + cells
-            # add the word to our set of words
-            if len(primary_word) > 1:
-                words.append(primary_word)
-
-            # next, look for perpendicular words for all tiles
-            for p in tile_positions:
-                adjacency = self.is_adjacent(p)
-                new_word = [p]
-                if adjacency | AdjacentDirection.ABOVE:
-                    cells = self.get_contiguous_cells(p,
-                                                      AdjacentDirection.ABOVE)
-                    new_word = cells + new_word
-                if adjacency | AdjacentDirection.BELOW:
-                    cells = self.get_contiguous_cells(p,
-                                                      AdjacentDirection.BELOW)
-                    new_word = new_word + cells
-                # add the word to our set of words
-                if len(new_word) > 1:
-                    words.append(new_word)
-
-        elif orientation == Orientation.VERTICAL:
+            perpendicular_orientation = Orientation.VERTICAL
+        else:
             primary_word = sorted(tile_positions, key=lambda x: x[0])
+            perpendicular_orientation = Orientation.HORIZONTAL
 
-            # first, add the primary word, extending above and below as needed
-            first_adjacents = self.is_adjacent(primary_word[0])
-            if first_adjacents | AdjacentDirection.ABOVE:
-                cells = self.get_contiguous_cells(primary_word[0],
-                                                  AdjacentDirection.ABOVE)
-                primary_word = cells + primary_word
+        # first, add the primary word, extending front and end as needed
+        front = self.extend_word(orientation, primary_word[0])
+        end = self.extend_word(orientation, primary_word[-1])
+        new_word = front[0:-1] + primary_word + end[1:]
+        words.append(new_word)
 
-            last_adjacents = self.is_adjacent(primary_word[-1])
-            if last_adjacents | AdjacentDirection.BELOW:
-                cells = self.get_contiguous_cells(primary_word[-1],
-                                                  AdjacentDirection.BELOW)
-                primary_word = primary_word + cells
-            # add the word to our set of words
-            if len(primary_word) > 1:
-                words.append(primary_word)
-
-            # next, look for perpendicular words for all tiles
-            for p in tile_positions:
-                adjacency = self.is_adjacent(p)
-                new_word = [p]
-                if adjacency | AdjacentDirection.LEFT:
-                    cells = self.get_contiguous_cells(p,
-                                                      AdjacentDirection.LEFT)
-                    new_word = cells + new_word
-                if adjacency | AdjacentDirection.RIGHT:
-                    cells = self.get_contiguous_cells(p,
-                                                      AdjacentDirection.RIGHT)
-                    new_word = new_word + cells
-                # add the word to our set of words
-                if len(new_word) > 1:
-                    words.append(new_word)
+        # next, look for perpendicular words for all tiles
+        for p in tile_positions:
+            new_word = self.extend_word(perpendicular_orientation, p)
+            # if we find a perpendicular word, add it to our set of words
+            if len(new_word) > 1:
+                words.append(new_word)
 
         return words
 

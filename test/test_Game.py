@@ -160,7 +160,7 @@ class GameTest(unittest.TestCase):
             game.play_tiles(
                 [(position[0], position[1], self.A)])
 
-    def test_play_files_valid(self):
+    def test_play_tiles_valid(self):
         game = Game()
         score = game.play_tiles([
             (Board.MIDDLE[0], Board.MIDDLE[1], self.A),
@@ -329,13 +329,6 @@ class GameTest(unittest.TestCase):
         self.assertListEqual(word, [])
 
     # Find Words tests
-    def test_find_words_none(self):
-        game = Game()
-        words = game.find_words(Orientation.HORIZONTAL,
-                                [(Board.MIDDLE[0], Board.MIDDLE[1],
-                                 self.A)])
-        self.assertEqual(words, [])
-
     def test_find_words_extend_left(self):
         game = Game()
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]+1] = self.R
