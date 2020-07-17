@@ -6,16 +6,22 @@
 
 from .tile import Tile
 from collections_extended import bag
+import random
 
 
 class NotEnoughTilesException(Exception):
-    pass
+    def __init__(self, tiles_requested, tiles_available):
+        self.tiles_requested = tiles_requested
+        self.tiles_available = tiles_available
+        self.message = "{} {}".format(tiles_requested, tiles_available)
 
 
 class TileBag:
 
-    def __init__(self):
+    def __init__(self, seed=None):
         self._tiles = bag()
+        random.seed(seed)
+        self.populate_tiles()
 
     def __len__(self):
         return len(self._tiles)
@@ -58,15 +64,14 @@ class TileBag:
             self._tiles.add(Tile('E', 1))
 
     def draw_tiles(self, num_tiles):
-        # TODO: randomize draw
-        drawn_tiles = []
-        for _ in range(max(num_tiles, len(self._tiles))):
-            drawn_tiles.append(self._tiles.pop())
+        num_tiles = min(num_tiles, len(self))
+        drawn_tiles = random.sample(self._tiles, k=num_tiles)
+        self._tiles -= drawn_tiles
         return drawn_tiles
 
     def exchange_tiles(self, tiles):
-        if len(tiles) > len(self._tiles):
-            raise NotEnoughTilesException()
+        if len(tiles) > len(self):
+            raise NotEnoughTilesException(tiles, len(self))
 
         drawn_tiles = self.draw_tiles(len(tiles))
         for x in tiles:
