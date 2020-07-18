@@ -14,6 +14,7 @@ class Board:
     def __init__(self):
         self._board = [[None for _ in range(Board.SIZE)]
                        for _ in range(Board.SIZE)]
+        self.is_empty = True
 
         self.double_letter_cells = {
             (0, 3), (0, 11),
@@ -50,8 +51,6 @@ class Board:
             (7, 0), (7, 14),
             (14, 0), (14, 7), (14, 14)
         }
-
-        self.is_empty = True
 
     def __str__(self):
         printable_board = ""

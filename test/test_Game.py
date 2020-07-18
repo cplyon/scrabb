@@ -160,11 +160,19 @@ class GameTest(unittest.TestCase):
             game.play_tiles(
                 [(position[0], position[1], self.A)])
 
-    def test_play_tiles_valid(self):
+    def test_play_tiles_valid_horizontal(self):
         game = Game()
         score = game.play_tiles([
             (Board.MIDDLE[0], Board.MIDDLE[1], self.A),
             (Board.MIDDLE[0], Board.MIDDLE[1]+1, self.B)
+        ])
+        self.assertEqual(score, 4)
+
+    def test_play_tiles_valid_vertical(self):
+        game = Game()
+        score = game.play_tiles([
+            (Board.MIDDLE[0], Board.MIDDLE[1], self.A),
+            (Board.MIDDLE[0]+1, Board.MIDDLE[1], self.B)
         ])
         self.assertEqual(score, 4)
 
@@ -336,9 +344,9 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]][Board.MIDDLE[1]+3] = self.R
         game.board.is_empty = False
         words = game.find_words(Orientation.HORIZONTAL,
-                                [(Board.MIDDLE[0], Board.MIDDLE[1],
+                                [(Board.MIDDLE[0], Board.MIDDLE[1]-1,
                                  self.A),
-                                 (Board.MIDDLE[0], Board.MIDDLE[1]-1,
+                                 (Board.MIDDLE[0], Board.MIDDLE[1],
                                  self.A)])
         self.assertListEqual(words, [[
             (Board.MIDDLE[0], Board.MIDDLE[1]-1, self.A),
@@ -374,9 +382,9 @@ class GameTest(unittest.TestCase):
         game.board[Board.MIDDLE[0]+3][Board.MIDDLE[1]] = self.B
         game.board.is_empty = False
         words = game.find_words(Orientation.VERTICAL,
-                                [(Board.MIDDLE[0], Board.MIDDLE[1],
+                                [(Board.MIDDLE[0]-1, Board.MIDDLE[1],
                                  self.A),
-                                 (Board.MIDDLE[0]-1, Board.MIDDLE[1],
+                                 (Board.MIDDLE[0], Board.MIDDLE[1],
                                  self.A)
                                  ])
         self.assertListEqual(words, [[

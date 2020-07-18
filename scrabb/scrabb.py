@@ -46,27 +46,31 @@ class Game:
     def __init__(self):
         self.board = Board()
         self.tile_bag = TileBag()
+        self.players = []
+        self.turn = 0
 
     def play_tiles(self, tile_positions):
 
-        # get just the tile positions
-        positions = [(p[0], p[1]) for p in tile_positions]
-
         # determine orientation
-        orientation = self.get_orientation(positions)
+        orientation = self.get_orientation(tile_positions)
+
+        # sort tiles based on orientation
+        if orientation == Orientation.HORIZONTAL:
+            tile_positions.sort(key=lambda x: x[1])
+        else:
+            tile_positions.sort(key=lambda x: x[0])
 
         # reject play if not valid
-        valid_reason = self.is_valid_play(positions, orientation)
+        valid_reason = self.is_valid_play(tile_positions, orientation)
         if valid_reason != ValidationReason.VALID:
-            raise InvalidPlayException(positions, orientation, valid_reason)
+            raise InvalidPlayException(tile_positions, orientation,
+                                       valid_reason)
 
         # find all words
         words = self.find_words(orientation, tile_positions)
 
         # calculate score
-        score = 0
-        for word in words:
-            score += self.calculate_score(word)
+        score = sum(self.calculate_score(word) for word in words)
 
         # place the tiles on the board
         self.board.place_tiles(tile_positions)
@@ -130,20 +134,19 @@ class Game:
         return cells_front + [tile_position] + cells_end
 
     def find_words(self, orientation, tile_positions):
-        words = []
+        # assumes tile_positions are sorted by orientation
 
+        words = []
         if orientation == Orientation.HORIZONTAL:
-            primary_word = sorted(tile_positions, key=lambda x: x[1])
             perpendicular_orientation = Orientation.VERTICAL
         else:
-            primary_word = sorted(tile_positions, key=lambda x: x[0])
             perpendicular_orientation = Orientation.HORIZONTAL
 
         # first, add the primary word, extending front and end as needed
-        front = self.extend_word(orientation, primary_word[0])
-        end = self.extend_word(orientation, primary_word[-1])
-        new_word = front[0:-1] + primary_word + end[1:]
-        words.append(new_word)
+        front = self.extend_word(orientation, tile_positions[0])
+        end = self.extend_word(orientation, tile_positions[-1])
+        primary_word = front[0:-1] + tile_positions + end[1:]
+        words.append(primary_word)
 
         # next, look for perpendicular words for all tiles
         for p in tile_positions:
@@ -157,15 +160,16 @@ class Game:
     def calculate_score(self, tile_positions):
         score = 0
         word_multiplier = 1
+
         # calculate tile scores
         current_score = 0
         for p in tile_positions:
-            # calculate cell bonuses
+            # calculate word bonuses
             if (p[0], p[1]) in self.board.double_word_cells:
                 word_multiplier *= 2
             elif (p[0], p[1]) in self.board.triple_word_cells:
                 word_multiplier *= 3
-
+            # calculate letter bonuses
             if (p[0], p[1]) in self.board.double_letter_cells:
                 current_score += (p[2].score * 2)
             elif (p[0], p[1]) in self.board.triple_letter_cells:
@@ -181,7 +185,7 @@ class Game:
 
     def get_orientation(self, positions):
         # Determine word orientation, or NONE if we can't.
-        # Treat single tile plays as Horiztonal
+        # Treat single tile plays as Horizontal
         row = positions[0][0]
         col = positions[0][1]
         orientation = Orientation.NONE
@@ -213,7 +217,10 @@ class Game:
 
         return adjacent_direction
 
-    def is_valid_play(self, positions, orientation):
+    def is_valid_play(self, tile_positions, orientation):
+        # get just the tile positions, since we don't need the actual tile
+        positions = [(p[0], p[1]) for p in tile_positions]
+
         # check orientation is either Horizonal or Vertical
         if orientation == Orientation.NONE:
             return ValidationReason.INVALID_ORIENTATION
@@ -227,7 +234,8 @@ class Game:
                 return ValidationReason.FIRST_PLAY_TOO_FEW_TILES
         else:
             # check each cell isn't already full
-            if any(self.board[p[0]][p[1]] is not None for p in positions):
+            if any(self.board[p[0]][p[1]] is not None
+                   for p in positions):
                 return ValidationReason.CELL_ALREADY_FULL
 
             # check that play is adjacent to at least one tile
@@ -239,16 +247,16 @@ class Game:
         # check that all played tiles are contiguous
         if orientation == Orientation.HORIZONTAL:
             row = positions[0][0]
-            for i in range(min(positions, key=lambda x: x[1])[1],
-                           max(positions, key=lambda x: x[1])[1]+1):
-                if (row, i) not in positions and self.board[row][i] is None:
-                    return ValidationReason.NOT_CONTIGUOUS
+            if any((row, i) not in positions and self.board[row][i] is None
+                   for i in range(positions[0][1],
+                                  max(positions, key=lambda x: x[1])[1]+1)):
+                return ValidationReason.NOT_CONTIGUOUS
         elif orientation == Orientation.VERTICAL:
             col = positions[0][1]
-            for i in range(min(positions, key=lambda x: x[0])[0],
-                           max(positions, key=lambda x: x[0])[0]+1):
-                if (i, col) not in positions and self.board[i][col] is None:
-                    return ValidationReason.NOT_CONTIGUOUS
+            if any((i, col) not in positions and self.board[i][col] is None
+                   for i in range(positions[0][0],
+                                  max(positions, key=lambda x: x[0])[0]+1)):
+                return ValidationReason.NOT_CONTIGUOUS
 
         # this is a valid play!
         return ValidationReason.VALID
