@@ -48,6 +48,7 @@ class Game:
         self.tile_bag = TileBag()
         self.players = []
         self.turn = 0
+        self.winner = None
 
     def play_tiles(self, tile_positions):
 
@@ -134,7 +135,7 @@ class Game:
         return cells_front + [tile_position] + cells_end
 
     def find_words(self, orientation, tile_positions):
-        # assumes tile_positions are sorted by orientation
+        # assumes tile_positions are sorted based on orientation
 
         words = []
         if orientation == Orientation.HORIZONTAL:
@@ -218,12 +219,13 @@ class Game:
         return adjacent_direction
 
     def is_valid_play(self, tile_positions, orientation):
-        # get just the tile positions, since we don't need the actual tile
-        positions = [(p[0], p[1]) for p in tile_positions]
-
         # check orientation is either Horizonal or Vertical
         if orientation == Orientation.NONE:
             return ValidationReason.INVALID_ORIENTATION
+
+        # get just the tile positions, since we don't need the actual tile
+        # to determine if the play is valid
+        positions = [(p[0], p[1]) for p in tile_positions]
 
         # check that first play is on middle cell and
         # is at least 2 tiles
@@ -239,7 +241,7 @@ class Game:
                 return ValidationReason.CELL_ALREADY_FULL
 
             # check that play is adjacent to at least one tile
-            # previously on the board
+            # already on the board
             if all(self.is_adjacent(p) == AdjacentDirection.NONE
                    for p in positions):
                 return ValidationReason.NOT_ADJACENT
