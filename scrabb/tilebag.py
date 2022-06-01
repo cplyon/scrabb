@@ -4,13 +4,14 @@
 # Author: Chris Lyon
 # Contact: chris@cplyon.ca
 
-from .tile import Tile
-from collections_extended import bag
 import random
+from collections_extended import bag
+from .tile import Tile
 
 
 class NotEnoughTilesException(Exception):
     def __init__(self, tiles_requested, tiles_available):
+        super().__init__()
         self.tiles_requested = tiles_requested
         self.tiles_available = tiles_available
         self.message = "{} {}".format(tiles_requested, tiles_available)
@@ -65,7 +66,7 @@ class TileBag:
 
     def draw_tiles(self, num_tiles):
         num_tiles = min(num_tiles, len(self))
-        drawn_tiles = random.sample(self._tiles, k=num_tiles)
+        drawn_tiles = random.sample(list(self._tiles), k=num_tiles)
         self._tiles -= drawn_tiles
         return drawn_tiles
 

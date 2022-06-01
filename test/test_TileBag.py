@@ -39,7 +39,7 @@ class TileBagTest(unittest.TestCase):
         drawn_tiles = tb.exchange_tiles(to_exchange)
         self.assertEqual(len(drawn_tiles), 7)
         self.assertEqual(len(tb), 100)
-        self.assertTrue(tb._tiles.is_superset(to_exchange))
+        self.assertTrue(tb._tiles.issuperset(to_exchange))
 
     def test_echange_tiles_not_enough(self):
         tb = TileBag()

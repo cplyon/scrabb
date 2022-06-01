@@ -4,9 +4,9 @@
 # Author: Chris Lyon
 # Contact: chris@cplyon.ca
 
+from enum import Enum, Flag, auto
 from .board import Board
 from .tilebag import TileBag
-from enum import Enum, Flag, auto
 
 
 class ValidationReason(Enum):
@@ -35,10 +35,11 @@ class AdjacentDirection(Flag):
 
 class InvalidPlayException(Exception):
     def __init__(self, positions, orientation, valid_reason):
+        super().__init__()
         self.positions = positions
         self.orientation = orientation
         self.valid_reason = valid_reason
-        self.message = "{} {} {}".format(positions, orientation, valid_reason)
+        self.message = f"{positions} {orientation} {valid_reason}"
 
 
 class Game:

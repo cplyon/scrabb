@@ -57,7 +57,7 @@ class Board:
         for r in range(Board.SIZE):
             for c in range(Board.SIZE):
                 if self._board[r][c] is not None:
-                    printable_board += "%s " % self._board[r][c].value
+                    printable_board += f"{self._board[r][c].value} "
                 else:
                     printable_board += "0 "
             printable_board += "\n"

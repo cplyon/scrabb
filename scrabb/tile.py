@@ -10,4 +10,4 @@ class Tile:
         self.score = score
 
     def __str__(self):
-        return "({0},{1})".format(self.letter, self.score)
+        return f"({self.letter},{self.score})"
