@@ -4,7 +4,10 @@
 # Author: Chris Lyon
 # Contact: chris@cplyon.ca
 
+import dataclasses
 
+
+@dataclasses.dataclass
 class Player:
 
     def __init__(self, name):
