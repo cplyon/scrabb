@@ -81,28 +81,26 @@ class Game:
 
     def get_contiguous_cells(self, cell, direction):
         new_word = []
+        row = cell[0]
+        col = cell[1]
         # return a list of cells that contain tiles in direction from cell
         if direction == AdjacentDirection.LEFT:
-            row = cell[0]
-            col = cell[1] - 1
+            col -= 1
             while self.board[row][col] is not None and col > 0:
                 new_word.insert(0, (row, col, self.board[row][col]))
                 col -= 1
         elif direction == AdjacentDirection.RIGHT:
-            row = cell[0]
-            col = cell[1] + 1
+            col += 1
             while self.board[row][col] is not None and col < Board.SIZE:
                 new_word.append((row, col, self.board[row][col]))
                 col += 1
         elif direction == AdjacentDirection.ABOVE:
-            row = cell[0] - 1
-            col = cell[1]
+            row -= 1
             while self.board[row][col] is not None and row > 0:
                 new_word.insert(0, (row, col, self.board[row][col]))
                 row -= 1
         elif direction == AdjacentDirection.BELOW:
-            row = cell[0] + 1
-            col = cell[1]
+            row += 1
             while self.board[row][col] is not None and row < Board.SIZE:
                 new_word.append((row, col, self.board[row][col]))
                 row += 1
