@@ -83,27 +83,28 @@ class Game:
         new_word = []
         row = cell[0]
         col = cell[1]
-        # return a list of cells that contain tiles in direction from cell
-        if direction == AdjacentDirection.LEFT:
-            col -= 1
-            while self.board[row][col] is not None and col > 0:
-                new_word.insert(0, (row, col, self.board[row][col]))
+
+        while True:
+            if direction == AdjacentDirection.LEFT:
                 col -= 1
-        elif direction == AdjacentDirection.RIGHT:
-            col += 1
-            while self.board[row][col] is not None and col < Board.SIZE:
-                new_word.append((row, col, self.board[row][col]))
+            elif direction == AdjacentDirection.RIGHT:
                 col += 1
-        elif direction == AdjacentDirection.ABOVE:
-            row -= 1
-            while self.board[row][col] is not None and row > 0:
-                new_word.insert(0, (row, col, self.board[row][col]))
+            elif direction == AdjacentDirection.ABOVE:
                 row -= 1
-        elif direction == AdjacentDirection.BELOW:
-            row += 1
-            while self.board[row][col] is not None and row < Board.SIZE:
-                new_word.append((row, col, self.board[row][col]))
+            elif direction == AdjacentDirection.BELOW:
                 row += 1
+
+            if row < 0 or row >= Board.SIZE or col < 0 or col >= Board.SIZE:
+                break
+
+            if self.board[row][col] is None:
+                break
+
+            if direction == AdjacentDirection.LEFT or direction == AdjacentDirection.ABOVE:
+                new_word.insert(0, (row, col, self.board[row][col]))
+            else:
+                new_word.append((row, col, self.board[row][col]))
+
         return new_word
 
     def extend_word(self, orientation, tile_position):
