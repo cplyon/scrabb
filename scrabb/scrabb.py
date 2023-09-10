@@ -100,7 +100,7 @@ class Game:
             if self.board[row][col] is None:
                 break
 
-            if direction == AdjacentDirection.LEFT or direction == AdjacentDirection.ABOVE:
+            if direction in [AdjacentDirection.LEFT, AdjacentDirection.ABOVE]:
                 new_word.insert(0, (row, col, self.board[row][col]))
             else:
                 new_word.append((row, col, self.board[row][col]))

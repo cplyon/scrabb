@@ -14,7 +14,7 @@ class NotEnoughTilesException(Exception):
         super().__init__()
         self.tiles_requested = tiles_requested
         self.tiles_available = tiles_available
-        self.message = "{} {}".format(tiles_requested, tiles_available)
+        self.message = f"{tiles_requested} {tiles_available}"
 
 
 class TileBag:
