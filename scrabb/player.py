@@ -4,13 +4,11 @@
 # Author: Chris Lyon
 # Contact: chris@cplyon.ca
 
-import dataclasses
+from dataclasses import dataclass
+from .tile import Tile
 
-
-@dataclasses.dataclass
+@dataclass
 class Player:
-
-    def __init__(self, name):
-        self.name = name
-        self.score = 0
-        self.rack = []
+    name: str
+    score: int = 0
+    rack: list[Tile] = []

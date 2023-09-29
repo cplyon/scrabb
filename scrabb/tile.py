@@ -4,10 +4,9 @@
 # Author: Chris Lyon
 # Contact: chris@cplyon.ca
 
-class Tile:
-    def __init__(self, letter, score):
-        self.letter = letter
-        self.score = score
+from dataclasses import dataclass
 
-    def __str__(self):
-        return f"({self.letter},{self.score})"
+@dataclass(frozen=True)
+class Tile:
+    letter: str
+    score: int
