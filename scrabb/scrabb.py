@@ -150,8 +150,8 @@ class Game:
         words.append(primary_word)
 
         # next, look for perpendicular words for all tiles
-        for p in tile_positions:
-            new_word = self.extend_word(perpendicular_orientation, p)
+        for pos in tile_positions:
+            new_word = self.extend_word(perpendicular_orientation, pos)
             # if we find a perpendicular word, add it to our set of words
             if len(new_word) > 1:
                 words.append(new_word)
@@ -159,24 +159,23 @@ class Game:
         return words
 
     def calculate_score(self, tile_positions):
-        score = 0
         word_multiplier = 1
 
         # calculate tile scores
         current_score = 0
-        for p in tile_positions:
+        for pos in tile_positions:
             # calculate word bonuses
-            if (p[0], p[1]) in self.board.double_word_cells:
+            if (pos[0], pos[1]) in self.board.double_word_cells:
                 word_multiplier *= 2
-            elif (p[0], p[1]) in self.board.triple_word_cells:
+            elif (pos[0], pos[1]) in self.board.triple_word_cells:
                 word_multiplier *= 3
             # calculate letter bonuses
-            if (p[0], p[1]) in self.board.double_letter_cells:
-                current_score += (p[2].score * 2)
-            elif (p[0], p[1]) in self.board.triple_letter_cells:
-                current_score += (p[2].score * 3)
+            if (pos[0], pos[1]) in self.board.double_letter_cells:
+                current_score += (pos[2].score * 2)
+            elif (pos[0], pos[1]) in self.board.triple_letter_cells:
+                current_score += (pos[2].score * 3)
             else:
-                current_score += p[2].score
+                current_score += pos[2].score
         score = current_score * word_multiplier
 
         # bingo bonus
@@ -225,7 +224,7 @@ class Game:
 
         # get just the tile positions, since we don't need the actual tile
         # to determine if the play is valid
-        positions = [(p[0], p[1]) for p in tile_positions]
+        positions = [(pos[0], pos[1]) for pos in tile_positions]
 
         # check that first play is on middle cell and
         # is at least 2 tiles
@@ -236,14 +235,14 @@ class Game:
                 return ValidationReason.FIRST_PLAY_TOO_FEW_TILES
         else:
             # check each cell isn't already full
-            if any(self.board[p[0]][p[1]] is not None
-                   for p in positions):
+            if any(self.board[pos[0]][pos[1]] is not None
+                   for pos in positions):
                 return ValidationReason.CELL_ALREADY_FULL
 
             # check that play is adjacent to at least one tile
             # already on the board
-            if all(self.is_adjacent(p) == AdjacentDirection.NONE
-                   for p in positions):
+            if all(self.is_adjacent(pos) == AdjacentDirection.NONE
+                   for pos in positions):
                 return ValidationReason.NOT_ADJACENT
 
         # check that all played tiles are contiguous

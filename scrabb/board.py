@@ -54,10 +54,10 @@ class Board:
 
     def __str__(self):
         printable_board = ""
-        for r in range(Board.SIZE):
-            for c in range(Board.SIZE):
-                if self._board[r][c] is not None:
-                    printable_board += f"{self._board[r][c].value} "
+        for row in range(Board.SIZE):
+            for col in range(Board.SIZE):
+                if self._board[row][col] is not None:
+                    printable_board += f"{self._board[row][col].value} "
                 else:
                     printable_board += "0 "
             printable_board += "\n"
@@ -67,13 +67,13 @@ class Board:
         return self._board[key]
 
     def place_tiles(self, tile_positions):
-        for t in tile_positions:
-            position = (t[0], t[1])
+        for pos in tile_positions:
+            position = (pos[0], pos[1])
             # remove any square bonuses
             self.double_letter_cells.discard(position)
             self.triple_letter_cells.discard(position)
             self.double_word_cells.discard(position)
             self.triple_word_cells.discard(position)
             # place tile
-            self._board[t[0]][t[1]] = t[2]
+            self._board[pos[0]][pos[1]] = pos[2]
         self.is_empty = False
