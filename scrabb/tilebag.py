@@ -75,6 +75,6 @@ class TileBag:
             raise NotEnoughTilesException(tiles, len(self))
 
         drawn_tiles = self.draw_tiles(len(tiles))
-        for x in tiles:
-            self._tiles.add(x)
+        for tile in tiles:
+            self._tiles.add(tile)
         return drawn_tiles
