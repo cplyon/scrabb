@@ -6,6 +6,7 @@
 
 from dataclasses import dataclass
 
+
 @dataclass(frozen=True)
 class Tile:
     letter: str

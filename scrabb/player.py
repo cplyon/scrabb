@@ -7,6 +7,7 @@
 from dataclasses import dataclass
 from .tile import Tile
 
+
 @dataclass
 class Player:
     name: str
